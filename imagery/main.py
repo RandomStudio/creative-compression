@@ -1,5 +1,5 @@
 from detect import detect_objects_in_image, visualize_detections
-from image import get_image, save_image
+from image import get_image, mask_image
 from model import download_labels, download_model, load_model
 
 from models.research.object_detection.utils import label_map_util
@@ -24,11 +24,11 @@ for image_name in os.listdir('./images/'):
 	image_np = np.array(image.convert('RGB'))
 
 	detections = detect_objects_in_image(image_np, detect_fn)
-	image_np_with_detections = visualize_detections(image_np, detections, category_index)
-	#save_image(image_name, image_np_with_detections)
+
+	#image_np_with_detections = visualize_detections(image_np, detections, category_index)
 
 	image_mask = image_np.shape[0] * detections.get('detection_masks_reframed')[0]
-	save_image(image_name, image_np, image_mask, 'crop')
+	mask_image(image_name, image_np, image_mask)
 
 	print('Done')
 
