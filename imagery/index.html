@@ -1,0 +1,32 @@
+<html>
+	<head>
+		<title>Image loading experiment</title>
+	</head>
+	<style>
+		.container {
+			width: 400px;
+			position: relative;
+		}
+		.container img {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			width: 100%;
+		}
+		.container img:first-of-type {
+			position: relative;
+			filter: blur(4px);
+		}
+		.container:hover img:first-of-type {
+			filter: blur(0);
+		}
+	</style>
+	<body>
+		<div class="container">
+			<img src="identified_images/21-10-2020_16-48-56_rest_lucy.jpg" />
+			<img src="identified_images/21-10-2020_16-48-56_object_lucy.jpg" />
+		</div>
+	</body>
+</html>
