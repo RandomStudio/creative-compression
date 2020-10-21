@@ -3,14 +3,16 @@ from functions import download_labels
 import matplotlib.pyplot as plt
 from PIL import Image
 import numpy as np
+from object_detection.utils import ops as utils_ops
 from models.research.object_detection.builders import model_builder
 from models.research.object_detection.utils import config_util
-from models.research.object_detection.utils import visualization_utils as viz_utils
+from models.research.object_detection.utils import visualization_utils as vis_utils
 from models.research.object_detection.utils import label_map_util
 import os
 import time
 import tensorflow as tf
 import warnings
+from datetime import datetime
 
 # Silence warnings
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
@@ -21,13 +23,13 @@ warnings.filterwarnings('ignore')
 ################
 
 PATH_TO_MODEL_DIR = download_model(
-	'centernet_hg104_1024x1024_coco17_tpu-32', '20200711')
+	'mask_rcnn_inception_resnet_v2_1024x1024_coco17_gpu-8', '20200711')
 PATH_TO_LABELS = download_labels('mscoco_label_map.pbtxt')
 
 PATH_TO_CFG = PATH_TO_MODEL_DIR + "/pipeline.config"
 PATH_TO_CKPT = PATH_TO_MODEL_DIR + "/checkpoint"
 
-IMAGE_PATHS = ['images/' + file for file in os.listdir('./images/')]
+IMAGE_NAMES = os.listdir('./images/')
 
 ################
 
@@ -69,7 +71,8 @@ category_index = label_map_util.create_category_index_from_labelmap(
 if not os.path.exists('identified_images'):
     os.makedirs('identified_images')
 
-for image_path in IMAGE_PATHS:
+for image_name in IMAGE_NAMES:
+	image_path = 'images/' + image_name
 
 	print('Running inference for {}... '.format(image_path))
 
@@ -86,33 +89,45 @@ for image_path in IMAGE_PATHS:
 	# Convert to numpy arrays, and take index [0] to remove the batch dimension.
 	# We're only interested in the first num_detections.
 	num_detections = int(detections.pop('num_detections'))
-	detections = {key: value[0, :num_detections].numpy()
-				  for key, value in detections.items()}
-	detections['num_detections'] = num_detections
 
-	# detection_classes should be ints.
-	detections['detection_classes'] = detections['detection_classes'].astype(
-		np.int64)
+	import itertools
+	detections = dict(itertools.islice(detections.items(), num_detections))
+	detections['num_detections'] = num_detections
 
 	label_id_offset = 1
 	image_np_with_detections = image_np.copy()
 
-	viz_utils.visualize_boxes_and_labels_on_image_array(
-		image_np_with_detections,
-		detections['detection_boxes'],
-		detections['detection_classes']+label_id_offset,
-		detections['detection_scores'],
-		category_index,
-		use_normalized_coordinates=True,
-		max_boxes_to_draw=200,
-		min_score_thresh=.30,
-		agnostic_mode=False)
+	# Handle models with masks:
+	if "detection_masks" in detections:
+			# Reframe the the bbox mask to the image size.
+			detection_masks_reframed = utils_ops.reframe_box_masks_to_image_masks(
+						detections["detection_masks"][0], detections["detection_boxes"][0],
+						image_np.shape[0], image_np.shape[1])      
+			detection_masks_reframed = tf.cast(detection_masks_reframed > 0.5,
+																		tf.uint8)
+			detections["detection_masks_reframed"] = detection_masks_reframed.numpy()
+
+	boxes = np.asarray(detections["detection_boxes"][0])
+	classes = np.asarray(detections["detection_classes"][0]).astype(np.int64)
+	scores = np.asarray(detections["detection_scores"][0])
+	mask = np.asarray(detections["detection_masks_reframed"])
+
+	# Visualizing the results
+	vis_utils.visualize_boxes_and_labels_on_image_array(
+			image_np_with_detections,
+			boxes,
+			classes,
+			scores,
+			category_index,
+			instance_masks=mask,
+			use_normalized_coordinates=True,
+			line_thickness=3)
 
 	width, height = image.size
 	plt.figure(figsize=(width / 100, height / 100), dpi=100)
 	plt.imshow(image_np_with_detections)
-	plt.savefig('identified_' + image_path, dpi=100)
+
+	plt.savefig('identified_images/' + datetime.now().strftime("%d-%m-%Y_%H-%M-%S")  + '_' + image_name, dpi=100)
+
 	print('Done')
 plt.show(block=True)
-
-# sphinx_gallery_thumbnail_number = 2
