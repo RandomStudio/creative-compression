@@ -25,8 +25,10 @@ for image_name in os.listdir('./images/'):
 
 	detections = detect_objects_in_image(image_np, detect_fn)
 	image_np_with_detections = visualize_detections(image_np, detections, category_index)
+	#save_image(image_name, image_np_with_detections)
 
-	save_image(image_name, image_np_with_detections)
+	image_mask = image_np.shape[0] * detections.get('detection_masks_reframed')[0]
+	save_image(image_name, image_np, image_mask, 'crop')
 
 	print('Done')
 
