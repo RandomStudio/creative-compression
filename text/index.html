@@ -15,8 +15,10 @@
 		}
 
 		body {
-			font-size: 20px;
-			line-height: 1.4;
+			--font-size: 20px;
+			--line-height: 1.4;
+			font-size: var(--font-size);
+			line-height: var(--line-height);
 		}
 		div {
 			max-width: 50vw;
@@ -30,6 +32,28 @@
 		}
 		.mixed {
 			font-family: Mixed;
+		}
+		.half {
+			font-family: Arial;
+			position: relative;
+		}
+		.half p {
+			--line: (var(--font-size) * var(--line-height));
+			position: relative;
+			background: repeating-linear-gradient(to bottom, black 0, black calc(0.5 * var(--line)), transparent calc(0.501 * var(--line)), transparent calc(1 * var(--line)));
+			background-clip: text;
+        	-webkit-text-fill-color: transparent;
+		}
+		.half p:after {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			content: attr(content);
+			font-family: Verdana;
+			background: repeating-linear-gradient(to bottom, transparent 0, transparent calc(0.5 * var(--line)), black calc(0.501 * var(--line)), black calc(1 * var(--line)));
+			background-clip: text;
 		}
 	</style>
 	<body>
@@ -65,7 +89,12 @@
 		</div>
 		<div class="half">
 			<h3>The Baptism and Testing of Jesus – Mixed</h3>
-			<p>
+			<p content="				At that time Jesus came from Nazareth in Galilee and was baptized by John in the Jordan.
+			Just as Jesus was coming up out of the water, he saw heaven being torn open and the Spirit descending on him like a dove.
+			And a voice came from heaven: “You are my Son, whom I love; with you I am well pleased.”
+			At once the Spirit sent him out into the wilderness,
+			and he was in the wilderness forty days, being tempted by Satan. He was with the wild animals, and angels attended him.
+">
 				At that time Jesus came from Nazareth in Galilee and was baptized by John in the Jordan.
 				Just as Jesus was coming up out of the water, he saw heaven being torn open and the Spirit descending on him like a dove.
 				And a voice came from heaven: “You are my Son, whom I love; with you I am well pleased.”
