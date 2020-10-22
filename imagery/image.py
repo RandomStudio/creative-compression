@@ -16,9 +16,10 @@ def extract_object(image_name, image_np, mask_np, suffix = ''):
 
 	image = Image.fromarray(np.uint8(image_np)).convert('RGB')
 
-	background = Image.new('RGBA', image.size, (255, 0, 0, 0))
+	background = image.copy()
+	background.putalpha(0)
 
-	mask = Image.fromarray(np.uint8(mask_np)).convert('L').point(lambda x: 0 if x<128 else 255, '1').convert('RGB').filter(ImageFilter.GaussianBlur).convert('L')
+	mask = Image.fromarray(np.uint8(mask_np)).convert('L').point(lambda x: 0 if x<128 else 255, '1').convert('RGB').filter(ImageFilter.GaussianBlur(10)).convert('L')
 	result = Image.composite(image, background, mask).convert('RGBA')
 	result.save('playground/object' + suffix + '.png', 'PNG')
 
