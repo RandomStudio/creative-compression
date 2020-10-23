@@ -7,6 +7,7 @@
 			width: 50%;
 			position: relative;
 			overflow: hidden;
+			margin: 0 10px 20px;
 		}
 		.container img {
 			position: absolute;
@@ -14,6 +15,7 @@
 			left: 0;
 			right: 0;
 			bottom: 0;
+			inset: none;
 			width: 100%;
 		}
 		.adjusted img {
@@ -52,39 +54,55 @@
 	<body>
 		<div class="grid masks">
 			<div class="container" data-size="214kb">
-				<img src="imagery/playground/masks/normal.jpg" />
+				<img src="imagery/playground/masks_office/normal.jpg" />
 			</div>
 			<div class="container adjusted" data-size="210kb">
-				<img src="imagery/playground/masks/rest.jpg" />
-				<img src="imagery/playground/masks/object0.png" />
-				<img src="imagery/playground/masks/object1.png" />
-				<img src="imagery/playground/masks/object2.png" />
-				<img src="imagery/playground/masks/object3.png" />
-				<img src="imagery/playground/masks/object4.png" />
-				<img src="imagery/playground/masks/object5.png" />
-				<img src="imagery/playground/masks/object6.png" />
-				<img src="imagery/playground/masks/object7.png" />
-				<img src="imagery/playground/masks/object8.png" />
-				<img src="imagery/playground/masks/object9.png" />
-				<img src="imagery/playground/masks/object10.png" />
+				<img src="imagery/playground/masks_office/rest.jpg" />
+				<img src="imagery/playground/masks_office/object0.png" />
+				<img src="imagery/playground/masks_office/object1.png" />
+				<img src="imagery/playground/masks_office/object2.png" />
+				<img src="imagery/playground/masks_office/object3.png" />
+				<img src="imagery/playground/masks_office/object4.png" />
+				<img src="imagery/playground/masks_office/object5.png" />
+				<img src="imagery/playground/masks_office/object6.png" />
+				<img src="imagery/playground/masks_office/object7.png" />
+				<img src="imagery/playground/masks_office/object8.png" />
+				<img src="imagery/playground/masks_office/object9.png" />
+				<img src="imagery/playground/masks_office/object10.png" />
+			</div>
+		</div>
+		<div class="grid masks">
+			<div class="container" data-size="146kb">
+				<img src="imagery/playground/masks_lucy/normal.jpg" />
+			</div>
+			<div class="container adjusted" data-size="117kb">
+				<img src="imagery/playground/masks_lucy/rest.jpg" />
+				<img src="imagery/playground/masks_lucy/object0.png" />
 			</div>
 		</div>
 		<div class="grid boxes">
 			<div class="container" data-size="214kb">
-				<img src="imagery/playground/boxes/normal.jpg" />
+				<img src="imagery/playground/boxes_office/normal.jpg" />
 			</div>
-			<div class="container adjusted" data-size="92kb">
-				<img src="imagery/playground/boxes/rest.jpg" />
+			<div class="container adjusted office" data-size="92kb">
+				<img src="imagery/playground/boxes_office/rest.jpg" />
+			</div>
+		</div>
+		<div class="grid boxes">
+			<div class="container" data-size="146kb">
+				<img src="imagery/playground/boxes_lucy/normal.jpg" />
+			</div>
+			<div class="container adjusted lucy" data-size="90kb">
+				<img src="imagery/playground/boxes_lucy/rest.jpg" />
 			</div>
 		</div>
 		<script type="text/javascript">
-			const json = '[[0.5609650611877441, 0.41028714179992676, 8.928571428571429, 22.1627408993576], [0.6383951306343079, 0.02872670814394951, 11.428571428571429, 17.237687366167023], [0.5179019570350647, 0.14414554834365845, 4.714285714285714, 12.633832976445397], [0.6068040728569031, 0.7940301299095154, 15.857142857142856, 34.90364025695932], [0.6124091744422913, 0.43169981241226196, 9.642857142857144, 18.629550321199144], [0.7046727538108826, 0.7289965152740479, 6.142857142857143, 17.34475374732334], [0.5994164943695068, 0.36327773332595825, 5.857142857142858, 5.460385438972163], [0.7507151365280151, 0.7713121771812439, 5.0, 13.9186295503212], [0.4310721755027771, 0.6320673823356628, 7.357142857142857, 19.16488222698073], [0.5190929770469666, 0.2553110122680664, 4.357142857142858, 9.74304068522484], [0.5011449456214905, 0.5449780821800232, 2.0, 8.35117773019272]]';
-			const container = document.querySelector('.boxes .adjusted')
-			const coords = JSON.parse(json)
-			for(let i = 0; i < 11; i++) {
-				const [top, left, width, height] = coords[i];
+			let json = '[[0.2531164288520813, 0.24126163125038147, 55.666666666666664, 53.03030303030303]]';
+			let container = document.querySelector('.boxes .lucy')
+			JSON.parse(json).map((coords, index) => {
+				const [top, left, width, height] = coords;
 				const image = document.createElement('img')
-				image.src = `imagery/playground/boxes/crop${i}.jpg`
+				image.src = `imagery/playground/boxes_lucy/crop${index}.jpg`
 				image.style = `
 					top: ${top * 100}%;
 					left: ${left * 100}%;
@@ -92,7 +110,22 @@
 					height: ${height}%;
 				`
 				container.append(image)
-			}
+			})
+
+			json = '[[0.5609650611877441, 0.41028714179992676, 8.928571428571429, 22.1627408993576], [0.6383951306343079, 0.02872670814394951, 11.428571428571429, 17.237687366167023], [0.5179019570350647, 0.14414554834365845, 4.714285714285714, 12.633832976445397], [0.6068040728569031, 0.7940301299095154, 15.857142857142856, 34.90364025695932], [0.6124091744422913, 0.43169981241226196, 9.642857142857144, 18.629550321199144], [0.7046727538108826, 0.7289965152740479, 6.142857142857143, 17.34475374732334], [0.5994164943695068, 0.36327773332595825, 5.857142857142858, 5.460385438972163], [0.7507151365280151, 0.7713121771812439, 5.0, 13.9186295503212], [0.4310721755027771, 0.6320673823356628, 7.357142857142857, 19.16488222698073], [0.5190929770469666, 0.2553110122680664, 4.357142857142858, 9.74304068522484], [0.5011449456214905, 0.5449780821800232, 2.0, 8.35117773019272]]';
+			container = document.querySelector('.boxes .office')
+			JSON.parse(json).map((coords, index) => {
+				const [top, left, width, height] = coords;
+				const image = document.createElement('img')
+				image.src = `imagery/playground/boxes_office/crop${index}.jpg`
+				image.style = `
+					top: ${top * 100}%;
+					left: ${left * 100}%;
+					width: ${width}%;
+					height: ${height}%;
+				`
+				container.append(image)
+			})
 
 		</script>
 	</body>

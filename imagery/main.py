@@ -19,7 +19,7 @@ MODES = {
 }
 
 CACHE_PATH = 'cache/'
-MODE = MODES['LAYERED_MASK']
+MODE = MODES['LAYERED_BOX']
 
 
 detect_fn = load_model()
