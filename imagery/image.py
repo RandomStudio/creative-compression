@@ -1,5 +1,5 @@
 from potrace import Bitmap
-from PIL import Image, ImageFilter
+from PIL import Image, ImageDraw, ImageFilter
 import numpy as np
 import matplotlib.path as mpath
 import matplotlib.patches as mpatches
@@ -27,6 +27,7 @@ def extract_box(image_name, image_np, coords, suffix = ''):
 
 	image_crop = image.crop((left, top, right, bottom))
 	image_crop.save('playground/boxes/crop' + suffix + '.jpg', optimize=True, quality=80)
+
 	crop_width, crop_height = image_crop.size
 
 	width = (crop_width / width) * 100

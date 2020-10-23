@@ -88,6 +88,5 @@ def detect_objects_in_image(image_np, detect_fn):
 						image_np.shape[0], image_np.shape[1])      
 			detection_masks_reframed = tf.cast(detection_masks_reframed > 0.5,
 																		tf.uint8)
-			detections["detection_masks_reframed"] = [mask for index, mask in enumerate(detection_masks_reframed.numpy()) if detections["detection_scores"][0][index] > 0.7]
 
 	return detections

@@ -19,7 +19,7 @@ MODES = {
 }
 
 CACHE_PATH = 'cache/'
-MODE = MODES['LAYERED_BOX']
+MODE = MODES['LAYERED_MASK']
 
 
 detect_fn = load_model()
@@ -41,7 +41,7 @@ for image_name in os.listdir('./images/'):
 			json.dump(dimensions, outfile)
 
 	if MODE == MODES['LAYERED_MASK']:
-		masks_np = generate_masks(detect_fn, image_np, cache_location)
+		masks_np = generate_masks(detect_fn, image_np, cache_location, max_highlights=5)
 
 		for index, box_np in enumerate(masks_np):
 			extract_mask(image_name, image_np, box_np, str(index))
