@@ -1,9 +1,14 @@
-import pathlib
+import itertools
+import numpy as np
 import os
+import pathlib
 import tensorflow as tf
 import time
+
 from models.research.object_detection.builders import model_builder
 from models.research.object_detection.utils import config_util
+from models.research.object_detection.utils import label_map_util
+from object_detection.utils import ops as utils_ops
 
 # Download and extract model
 def download_model(model_name, model_date):
@@ -59,3 +64,30 @@ def load_model():
 	elapsed_time = end_time - start_time
 	print('Done! Took {} seconds'.format(elapsed_time))
 	return detect_fn
+
+
+def detect_objects_in_image(image_np, detect_fn):
+	print('================================')
+	input_tensor = tf.convert_to_tensor(np.expand_dims(image_np, 0), dtype=tf.float32)
+
+	detections = detect_fn(input_tensor)
+
+	# All outputs are batches tensors.
+	# Convert to numpy arrays, and take index [0] to remove the batch dimension.
+	# We're only interested in the first num_detections.
+	num_detections = int(detections.pop('num_detections'))
+
+	detections = dict(itertools.islice(detections.items(), num_detections))
+	detections['num_detections'] = num_detections
+
+	# Handle models with masks:
+	if "detection_masks" in detections:
+			# Reframe the the bbox mask to the image size.
+			detection_masks_reframed = utils_ops.reframe_box_masks_to_image_masks(
+						detections["detection_masks"][0], detections["detection_boxes"][0],
+						image_np.shape[0], image_np.shape[1])      
+			detection_masks_reframed = tf.cast(detection_masks_reframed > 0.5,
+																		tf.uint8)
+			detections["detection_masks_reframed"] = [mask for index, mask in enumerate(detection_masks_reframed.numpy()) if detections["detection_scores"][0][index] > 0.7]
+
+	return detections
