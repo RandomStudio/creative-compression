@@ -48,6 +48,7 @@ def save_background(image_np):
 	image = Image.fromarray(np.uint8(image_np)).convert('RGB')
 	result = image.convert('RGB')
 	result.save('playground/rest.jpg', 'JPEG', optimize=True, quality=8)
+	result.save('playground/normal.jpg', 'JPEG', optimize=True, quality=80)
 
 def vectorize_image(image_np):
 	image = Image.fromarray(np.uint8(image_np)).convert('1')

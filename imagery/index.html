@@ -4,7 +4,7 @@
 	</head>
 	<style>
 		.container {
-			width: 800px;
+			width: 50%;
 			position: relative;
 			overflow: hidden;
 		}
@@ -15,41 +15,63 @@
 			right: 0;
 			bottom: 0;
 			width: 100%;
-			transform: scale(1.0);
+		}
+		.adjusted img {
 			border: 1px solid grey;
 		}
-		.container img:first-of-type {
+		.adjusted img:first-of-type {
 			position: relative;
 			filter: blur(3px);
 			transform: none;
 			border: none;
 		}
-		.container:hover img:first-of-type {
+		.adjusted:hover img:first-of-type {
 			filter: blur(0);
+		}
+		.grid {
+			display: flex;
+			flex-direction: row;
+		}
+		[data-size] {
+			position: relative;
+			display: block;
+		}
+		[data-size]:after {
+			position: absolute;
+			bottom: 0;
+			background-color: white;
+			padding: 4px 2px;
+			content: attr(data-size);
+			font-size: 12px;
+			left: 0;
 		}
 	</style>
 	<body>
-		<canvas id="image"></canvas>
-		<div class="container">
-			<img src="playground/rest.jpg" />
+		<div class="grid">
+			<div class="container" data-size="214kb">
+				<img src="playground/normal.jpg" />
+			</div>
+			<div class="container adjusted" data-size="92kb">
+				<img src="playground/rest.jpg" />
+			</div>
 		</div>
-			<script type="text/javascript">
-				const json = '[[0.5609650611877441, 0.41028714179992676, 8.928571428571429, 22.1627408993576], [0.6383951306343079, 0.02872670814394951, 11.428571428571429, 17.237687366167023], [0.5179019570350647, 0.14414554834365845, 4.714285714285714, 12.633832976445397], [0.6068040728569031, 0.7940301299095154, 15.857142857142856, 34.90364025695932], [0.6124091744422913, 0.43169981241226196, 9.642857142857144, 18.629550321199144], [0.7046727538108826, 0.7289965152740479, 6.142857142857143, 17.34475374732334], [0.5994164943695068, 0.36327773332595825, 5.857142857142858, 5.460385438972163], [0.7507151365280151, 0.7713121771812439, 5.0, 13.9186295503212], [0.4310721755027771, 0.6320673823356628, 7.357142857142857, 19.16488222698073], [0.5190929770469666, 0.2553110122680664, 4.357142857142858, 9.74304068522484], [0.5011449456214905, 0.5449780821800232, 2.0, 8.35117773019272]]';
-				const container = document.querySelector('.container')
-				const coords = JSON.parse(json)
-				for(let i = 0; i < 11; i++) {
-					console.log(i)
-					const [top, left, width, height] = coords[i];
-					const image = document.createElement('img')
-					image.src = `playground/crop${i}.jpg`
-					image.style = `
-						top: ${top * 100}%;
-						left: ${left * 100}%;
-						width: ${width}%;
-						height: ${height}%;
-					`
-					container.append(image)
-				}
-			</script>
+		<script type="text/javascript">
+			const json = '[[0.5609650611877441, 0.41028714179992676, 8.928571428571429, 22.1627408993576], [0.6383951306343079, 0.02872670814394951, 11.428571428571429, 17.237687366167023], [0.5179019570350647, 0.14414554834365845, 4.714285714285714, 12.633832976445397], [0.6068040728569031, 0.7940301299095154, 15.857142857142856, 34.90364025695932], [0.6124091744422913, 0.43169981241226196, 9.642857142857144, 18.629550321199144], [0.7046727538108826, 0.7289965152740479, 6.142857142857143, 17.34475374732334], [0.5994164943695068, 0.36327773332595825, 5.857142857142858, 5.460385438972163], [0.7507151365280151, 0.7713121771812439, 5.0, 13.9186295503212], [0.4310721755027771, 0.6320673823356628, 7.357142857142857, 19.16488222698073], [0.5190929770469666, 0.2553110122680664, 4.357142857142858, 9.74304068522484], [0.5011449456214905, 0.5449780821800232, 2.0, 8.35117773019272]]';
+			const container = document.querySelector('.adjusted')
+			const coords = JSON.parse(json)
+			for(let i = 0; i < 11; i++) {
+				const [top, left, width, height] = coords[i];
+				const image = document.createElement('img')
+				image.src = `playground/crop${i}.jpg`
+				image.style = `
+					top: ${top * 100}%;
+					left: ${left * 100}%;
+					width: ${width}%;
+					height: ${height}%;
+				`
+				container.append(image)
+			}
+
+		</script>
 	</body>
 </html>

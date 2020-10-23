@@ -33,12 +33,12 @@ for image_name in os.listdir('./images/'):
 		boxes_coords = generate_boxes(detect_fn, image_np, cache_location)
 
 		dimensions = []
-		for index, coords in enumerate(boxes_coords):
-			crop_dimensions = extract_box(image_name, image_np, coords, str(index))
-			dimensions.append(crop_dimensions)
-
-		with open('playground/coords.json', 'w') as outfile:
-			json.dump(dimensions, outfile)
+		#for index, coords in enumerate(boxes_coords):
+		#	crop_dimensions = extract_box(image_name, image_np, coords, str(index))
+		#	dimensions.append(crop_dimensions)
+#
+		#with open('playground/coords.json', 'w') as outfile:
+		#	json.dump(dimensions, outfile)
 
 	if MODE == MODES['LAYERED_MASK']:
 		masks_np = generate_masks(detect_fn, image_name, cache_location)
