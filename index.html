@@ -52,29 +52,29 @@
 	<body>
 		<div class="grid masks">
 			<div class="container" data-size="214kb">
-				<img src="playground/masks/normal.jpg" />
+				<img src="imagery/playground/masks/normal.jpg" />
 			</div>
 			<div class="container adjusted" data-size="210kb">
-				<img src="playground/masks/rest.jpg" />
-				<img src="playground/masks/object0.png" />
-				<img src="playground/masks/object1.png" />
-				<img src="playground/masks/object2.png" />
-				<img src="playground/masks/object3.png" />
-				<img src="playground/masks/object4.png" />
-				<img src="playground/masks/object5.png" />
-				<img src="playground/masks/object6.png" />
-				<img src="playground/masks/object7.png" />
-				<img src="playground/masks/object8.png" />
-				<img src="playground/masks/object9.png" />
-				<img src="playground/masks/object10.png" />
+				<img src="imagery/playground/masks/rest.jpg" />
+				<img src="imagery/playground/masks/object0.png" />
+				<img src="imagery/playground/masks/object1.png" />
+				<img src="imagery/playground/masks/object2.png" />
+				<img src="imagery/playground/masks/object3.png" />
+				<img src="imagery/playground/masks/object4.png" />
+				<img src="imagery/playground/masks/object5.png" />
+				<img src="imagery/playground/masks/object6.png" />
+				<img src="imagery/playground/masks/object7.png" />
+				<img src="imagery/playground/masks/object8.png" />
+				<img src="imagery/playground/masks/object9.png" />
+				<img src="imagery/playground/masks/object10.png" />
 			</div>
 		</div>
 		<div class="grid boxes">
 			<div class="container" data-size="214kb">
-				<img src="playground/boxes/normal.jpg" />
+				<img src="imagery/playground/boxes/normal.jpg" />
 			</div>
 			<div class="container adjusted" data-size="92kb">
-				<img src="playground/boxes/rest.jpg" />
+				<img src="imagery/playground/boxes/rest.jpg" />
 			</div>
 		</div>
 		<script type="text/javascript">
@@ -84,7 +84,7 @@
 			for(let i = 0; i < 11; i++) {
 				const [top, left, width, height] = coords[i];
 				const image = document.createElement('img')
-				image.src = `playground/boxes/crop${i}.jpg`
+				image.src = `imagery/playground/boxes/crop${i}.jpg`
 				image.style = `
 					top: ${top * 100}%;
 					left: ${left * 100}%;
