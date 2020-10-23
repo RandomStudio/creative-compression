@@ -1,5 +1,5 @@
 from detect import generate_boxes, generate_masks
-from image import extract_box, extract_mask, get_image_np, save_background, vectorize_image
+from image import extract_box, extract_mask, get_image_np, vectorize_image
 from model import load_model
 import numpy as np
 import os
@@ -19,7 +19,7 @@ MODES = {
 }
 
 CACHE_PATH = 'cache/'
-MODE = MODES['LAYERED_BOX']
+MODE = MODES['LAYERED_MASK']
 
 
 detect_fn = load_model()
@@ -33,20 +33,18 @@ for image_name in os.listdir('./images/'):
 		boxes_coords = generate_boxes(detect_fn, image_np, cache_location)
 
 		dimensions = []
-		#for index, coords in enumerate(boxes_coords):
-		#	crop_dimensions = extract_box(image_name, image_np, coords, str(index))
-		#	dimensions.append(crop_dimensions)
-#
-		#with open('playground/coords.json', 'w') as outfile:
-		#	json.dump(dimensions, outfile)
+		for index, coords in enumerate(boxes_coords):
+			crop_dimensions = extract_box(image_name, image_np, coords, str(index))
+			dimensions.append(crop_dimensions)
+
+		with open('playground/boxes/coords.json', 'w') as outfile:
+			json.dump(dimensions, outfile)
 
 	if MODE == MODES['LAYERED_MASK']:
-		masks_np = generate_masks(detect_fn, image_name, cache_location)
+		masks_np = generate_masks(detect_fn, image_np, cache_location)
 
 		for index, box_np in enumerate(masks_np):
 			extract_mask(image_name, image_np, box_np, str(index))
-
-	save_background(image_np)
 
 	print('Completed ' + image_name)
 
