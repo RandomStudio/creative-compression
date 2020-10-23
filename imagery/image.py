@@ -3,6 +3,8 @@ import cv2
 from datetime import datetime
 from PIL import Image, ImageOps
 import numpy as np
+import matplotlib.path as mpath
+import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 import os
 
@@ -27,3 +29,24 @@ def save_background(image_name, image_np):
 	image = Image.fromarray(np.uint8(image_np)).convert('RGB')
 	result = image.convert('RGB')
 	result.save('playground/rest.jpg', 'JPEG',optimize=True,quality=10)
+
+from potrace import Bitmap
+
+def vectorize_image(image_np):
+	image = Image.fromarray(np.uint8(image_np)).convert('1')
+	bitmap = Bitmap(np.asarray(image))
+	path = bitmap.trace()
+
+	Path = mpath.Path
+
+	fig, ax = plt.subplots()
+	pp1 = mpatches.PathPatch(
+		Path([(0, 0), (1, 0), (1, 1), (0, 0)],
+			[Path.MOVETO, Path.CURVE3, Path.CURVE3, Path.CLOSEPOLY]),
+		fc="none", transform=ax.transData)
+
+	ax.add_patch(pp1)
+	ax.plot([0.75], [0.25], "ro")
+	ax.set_title('The red point should be on the path')
+
+	plt.show()
