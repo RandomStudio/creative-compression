@@ -30,6 +30,9 @@
 		.adjusted:hover img:first-of-type {
 			filter: blur(0);
 		}
+		.vectorize img:first-of-type {
+			filter: blur(0);
+		}
 		.grid {
 			display: flex;
 			flex-direction: row;
@@ -109,13 +112,58 @@
 				<img src="imagery/playground/boxes_lucy/rest.jpg" />
 			</div>
 		</div>
+		<div class="grid vectorize">
+			<div class="container" data-size="146kb">
+				<img src="imagery/playground/vectorize_lucy/normal.jpg" />
+			</div>
+			<div class="container adjusted lucy" data-size="104kb">
+				<img src="imagery/playground/vectorize_lucy/background.jpg" />
+			</div>
+		</div>
+		<div class="grid vectorize">
+			<div class="container" data-size="96kb">
+				<img src="imagery/playground/vectorize_office/normal.jpg" />
+			</div>
+			<div class="container adjusted office" data-size="98kb">
+				<img src="imagery/playground/vectorize_office/background.jpg" />
+			</div>
+		</div>
 		<script type="text/javascript">
 			let json = '[[0.2531164288520813, 0.24126163125038147, 55.666666666666664, 53.03030303030303]]';
-			let container = document.querySelector('.boxes .lucy')
+			let container = document.querySelector('.vectorize .lucy')
+			JSON.parse(json).map((coords, index) => {
+				const [top, left, width, height] = coords;
+				const image = document.createElement('img')
+				image.src = `imagery/playground/vectorize_lucy/crop${index}.jpg`
+				image.style = `
+					top: ${top * 100}%;
+					left: ${left * 100}%;
+					width: ${width}%;
+					height: ${height}%;
+				`
+				container.append(image)
+			})
+
+			container = document.querySelector('.boxes .lucy')
 			JSON.parse(json).map((coords, index) => {
 				const [top, left, width, height] = coords;
 				const image = document.createElement('img')
 				image.src = `imagery/playground/boxes_lucy/crop${index}.jpg`
+				image.style = `
+					top: ${top * 100}%;
+					left: ${left * 100}%;
+					width: ${width}%;
+					height: ${height}%;
+				`
+				container.append(image)
+			})
+
+			json = '[[0.5595237016677856, 0.4361223578453064, 11.88888888888889, 22.4025974025974], [0.6912000179290771, 0.9136970639228821, 8.666666666666668, 19.58874458874459], [0.5127637982368469, 0.02328423410654068, 7.000000000000001, 13.095238095238097], [0.6086762547492981, 0.47393423318862915, 13.777777777777779, 19.155844155844157], [0.5011359453201294, 0.639741837978363, 3.3333333333333335, 6.926406926406926], [0.6554480195045471, 0.179978609085083, 7.111111111111111, 3.571428571428571], [0.5106088519096375, 0.18938389420509338, 6.666666666666667, 10.606060606060606], [0.43544238805770874, 0.7826889753341675, 10.555555555555555, 18.614718614718615], [0.5134708881378174, 0.22189100086688995, 3.4444444444444446, 5.844155844155844]]'
+			container = document.querySelector('.vectorize .office')
+			JSON.parse(json).map((coords, index) => {
+				const [top, left, width, height] = coords;
+				const image = document.createElement('img')
+				image.src = `imagery/playground/vectorize_office/crop${index}.jpg`
 				image.style = `
 					top: ${top * 100}%;
 					left: ${left * 100}%;
@@ -139,7 +187,6 @@
 				`
 				container.append(image)
 			})
-
 		</script>
 	</body>
 </html>

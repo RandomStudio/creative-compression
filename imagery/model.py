@@ -17,6 +17,7 @@ def download_model(model_name, model_date):
 	model_dir = tf.keras.utils.get_file(fname=model_name,
 										origin=base_url + model_date + '/' + model_file,
 										untar=True)
+	print(model_dir)
 	return str(model_dir)
 
 # Download labels file
@@ -31,7 +32,7 @@ def download_labels(filename):
 
 def load_model():
 	PATH_TO_MODEL_DIR = download_model(
-		'mask_rcnn_inception_resnet_v2_1024x1024_coco17_gpu-8', '20200711')
+		'mask_rcnn_inception_resnet_v2_1024x1024_coco17_gpu-8', '20200712')
 	PATH_TO_CFG = PATH_TO_MODEL_DIR + "/pipeline.config"
 	PATH_TO_CKPT = PATH_TO_MODEL_DIR + "/checkpoint"
 

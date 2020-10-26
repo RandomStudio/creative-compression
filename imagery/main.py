@@ -19,7 +19,7 @@ MODES = {
 }
 
 CACHE_PATH = 'cache/'
-MODE = MODES['LAYERED_MASK']
+MODE = MODES['VECTOR_BACKGROUND']
 
 
 detect_fn = load_model()
@@ -30,21 +30,44 @@ for image_name in os.listdir('./images/'):
 	cache_location = CACHE_PATH + image_name
 
 	if MODE == MODES['LAYERED_BOX']:
-		boxes_coords = generate_boxes(detect_fn, image_np, cache_location)
+		destination = 'playground/boxes'
+		if not os.path.exists(destination):
+			os.makedirs(destination)
 
+		boxes_coords = generate_boxes(detect_fn, image_np, cache_location)
 		dimensions = []
 		for index, coords in enumerate(boxes_coords):
-			crop_dimensions = extract_box(image_name, image_np, coords, str(index))
+			crop_dimensions = extract_box(destination, image_np, coords, str(index))
 			dimensions.append(crop_dimensions)
 
-		with open('playground/boxes/coords.json', 'w') as outfile:
+		with open(destination + '/coords.json', 'w') as outfile:
 			json.dump(dimensions, outfile)
 
 	if MODE == MODES['LAYERED_MASK']:
 		masks_np = generate_masks(detect_fn, image_np, cache_location, max_highlights=5)
 
+		destination = 'playground/masks'
+		if not os.path.exists(destination):
+			os.makedirs(destination)
+
 		for index, box_np in enumerate(masks_np):
-			extract_mask(image_name, image_np, box_np, str(index))
+			extract_mask(destination, image_np, box_np, str(index))
+
+	if MODE == MODES['VECTOR_BACKGROUND']:
+		destination = 'playground/vectorize'
+		if not os.path.exists(destination):
+			os.makedirs(destination)
+
+		boxes_coords = generate_boxes(detect_fn, image_np, cache_location)
+		dimensions = []
+		for index, coords in enumerate(boxes_coords):
+			crop_dimensions = extract_box(destination, image_np, coords, str(index))
+			dimensions.append(crop_dimensions)
+
+		with open(destination + '/coords.json', 'w') as outfile:
+			json.dump(dimensions, outfile)
+
+		vectorize_image(image_np, destination)
 
 	print('Completed ' + image_name)
 
