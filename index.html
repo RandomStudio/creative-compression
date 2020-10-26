@@ -133,7 +133,7 @@
 			<div class="container" data-size="116kb">
 				<img src="imagery/progressive/lucy.jpg" />
 			</div>
-			<div class="container adjusted lucy" data-size="20kb">
+			<div class="container adjusted lucy" data-size="0kb">
 				<img src="#" />
 			</div>
 		</div>
@@ -201,25 +201,31 @@
 			let startChunk = 0
 			let isLoading = false
 			const imgEl = document.querySelector('.progressive .adjusted img')
+			const contEl = document.querySelector('.progressive .adjusted')
 			const loadImageChunk = () => {
 				if (isLoading) {
 					return;
 				}
-				console.log('loading')
+
 				isLoading = true;
-				const endChunk = startChunk + 20000
+				const endChunk = startChunk === 0 ? startChunk + 20000 : startChunk + 19999
 				fetch('https://random-static.s3.eu-central-1.amazonaws.com/lucy_progressive.jpg', {
 					headers: {
 						'Range': `bytes=${startChunk}-${endChunk}`,
 					},
 				}).then(response => {
+					if (!response.ok) {
+						throw Error('File complete');
+					}
+					console.log(response)
 					return response.blob();
 				}).then(newBlob => {
 					blobParts.push(newBlob);
 					startChunk = endChunk + 1
 					imgEl.src = URL.createObjectURL(new Blob(blobParts, { type: "text/plain" }));
 					isLoading = false;
-				});
+					contEl.setAttribute('data-size', `${endChunk / 1000}kb`)
+				}).catch(err => console.log(err));
 			};
 
 			imgEl.addEventListener('mouseover', () => {
