@@ -77,9 +77,35 @@
 			font-size: 12px;
 			left: 0;
 		}
+		h2 {
+			--font-size: 1em;
+			--line-height: 1.4;
+			--line: (var(--font-size) * var(--line-height));
+			text-align: center;
+			max-width: 750px;
+			margin: 2em auto 1em;
+			font-family: 'Times New Roman', Times, serif;
+			position: relative;
+			font-weight: normal;
+			background: repeating-linear-gradient(to bottom, black 0, black calc(0.5 * var(--line)), transparent calc(0.501 * var(--line)), transparent calc(1 * var(--line)));
+			background-clip: text;
+        	-webkit-text-fill-color: transparent;
+		}
+		h2::after {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			content: attr(content);
+			font-family: Verdana, Geneva, Tahoma, sans-serif;
+			font-weight: normal;
+			background: repeating-linear-gradient(to bottom, transparent 0, transparent calc(0.5 * var(--line)), black calc(0.501 * var(--line)), black calc(1 * var(--line)));
+			background-clip: text;
+		}
 	</style>
 	<body>
-		Object masks
+		<h2>Generating masks via object detection, low quality BG, CSS blur</h2>
 		<div class="grid masks">
 			<div class="container" data-size="154kb">
 				<img src="imagery/playground/masks_office/normal.jpg" />
@@ -121,7 +147,7 @@
 				<img src="imagery/playground/masks_lucy/object0.png" />
 			</div>
 		</div>
-		Object boxes
+		<h2>Bounding box masks generated via object detection, low quality BG, CSS blur</h2>
 		<div class="grid boxes">
 			<div class="container" data-size="154kb">
 				<img src="imagery/playground/boxes_office/normal.jpg" />
@@ -138,7 +164,7 @@
 				<img src="imagery/playground/boxes_lucy/rest.jpg" />
 			</div>
 		</div>
-		Vectorized Backgrounds
+		<h2>Bounding box masks generated via object detection, cartoon stylised BG</h2>
 		<div class="grid vectorize">
 			<div class="container" data-size="146kb">
 				<img src="imagery/playground/vectorize_lucy/normal.jpg" />
@@ -155,7 +181,7 @@
 				<img src="imagery/playground/vectorize_office/background.jpg" />
 			</div>
 		</div>
-		Controlled progressive loading
+		<h2>Downloading progressively encoded JPEG images bit by bit</h2>
 		<div class="grid progressive">
 			<div class="container" data-size="116kb">
 				<img src="imagery/progressive/lucy.jpg" />
@@ -165,7 +191,7 @@
 			</div>
 			Note: Firefox is unable to access Content-Length header, therefore size displayed on the right does not match actual length (only ever downloads maximum of 116kb)
 		</div>
-		Chunked loading
+		<h2>Chunking image up in to many parts for targetted progressive loading</h2>
 		<div class="grid chunked">
 			<div class="container" data-size="116kb">
 				<img src="imagery/progressive/lucy.jpg" />
@@ -173,6 +199,8 @@
 			<div class="container adjusted lucy" data-size="1300kb"></div>
 		</div>
 		<script type="text/javascript">
+			const headings = document.querySelectorAll('h2');
+			headings.forEach(el => el.setAttribute('content', el.textContent))
 			let json = '[[0.2531164288520813, 0.24126163125038147, 55.666666666666664, 53.03030303030303]]';
 			let container = document.querySelector('.vectorize .lucy')
 			JSON.parse(json).map((coords, index) => {
