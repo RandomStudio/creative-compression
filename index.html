@@ -133,7 +133,7 @@
 			<div class="container" data-size="116kb">
 				<img src="imagery/progressive/lucy.jpg" />
 			</div>
-			<div class="container adjusted lucy" data-size="18kb">
+			<div class="container adjusted lucy" data-size="20kb">
 				<img src="#" />
 			</div>
 		</div>
@@ -199,7 +199,7 @@
 
 			fetch('https://cors-anywhere.herokuapp.com/https://raw.githubusercontent.com/RandomStudio/creative-compression/master/imagery/progressive/lucy_progressive.jpg', {
 				headers: {
-					'Range': 'bytes=0-18000',
+					'Range': 'bytes=0-20000',
 				},
 			}).then(response => {
 				return response.blob();
