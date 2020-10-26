@@ -30,7 +30,8 @@
 		.adjusted:hover img:first-of-type {
 			filter: blur(0);
 		}
-		.vectorize img:first-of-type {
+		.vectorize img:first-of-type,
+		.progressive img:first-of-type {
 			filter: blur(0);
 		}
 		.grid {
@@ -128,6 +129,14 @@
 				<img src="imagery/playground/vectorize_office/background.jpg" />
 			</div>
 		</div>
+		<div class="grid progressive">
+			<div class="container" data-size="116kb">
+				<img src="imagery/progressive/lucy.jpg" />
+			</div>
+			<div class="container adjusted lucy" data-size="18kb">
+				<img src="#" />
+			</div>
+		</div>
 		<script type="text/javascript">
 			let json = '[[0.2531164288520813, 0.24126163125038147, 55.666666666666664, 53.03030303030303]]';
 			let container = document.querySelector('.vectorize .lucy')
@@ -187,6 +196,17 @@
 				`
 				container.append(image)
 			})
+
+			fetch('https://cors-anywhere.herokuapp.com/https://raw.githubusercontent.com/RandomStudio/creative-compression/master/imagery/progressive/lucy_progressive.jpg', {
+				headers: {
+					'Range': 'bytes=0-18000',
+				},
+			}).then(response => {
+				return response.blob();
+			}).then(blob => {
+				const imgEl = document.querySelector('.progressive .adjusted img')
+				imgEl.src = URL.createObjectURL(blob);
+			});
 		</script>
 	</body>
 </html>
