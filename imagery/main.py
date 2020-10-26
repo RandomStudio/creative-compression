@@ -1,5 +1,5 @@
 from detect import generate_boxes, generate_masks
-from image import extract_box, extract_mask, get_image_np, vectorize_image
+from image import chunk_image, extract_box, extract_mask, get_image_np, vectorize_image
 from model import load_model
 import numpy as np
 import os
@@ -13,13 +13,14 @@ tf.get_logger().setLevel('ERROR')
 warnings.filterwarnings('ignore')
 
 MODES = {
+	'CHUNKED_IMAGE': 'CHUNKED_IMAGE',
 	'LAYERED_BOX': 'LAYERED_BOX',
 	'LAYERED_MASK': 'LAYERED_MASK',
 	'VECTOR_BACKGROUND': 'VECTOR_BACKGROUND',
 }
 
 CACHE_PATH = 'cache/'
-MODE = MODES['VECTOR_BACKGROUND']
+MODE = MODES['CHUNKED_IMAGE']
 
 
 detect_fn = load_model()
@@ -68,6 +69,12 @@ for image_name in os.listdir('./images/'):
 			json.dump(dimensions, outfile)
 
 		vectorize_image(image_np, destination)
+
+	if MODE == MODES['CHUNKED_IMAGE']:
+		destination = 'playground/chunked'
+		if not os.path.exists(destination):
+			os.makedirs(destination)
+		chunk_image(image_np, destination)
 
 	print('Completed ' + image_name)
 

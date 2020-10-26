@@ -1,3 +1,4 @@
+import json
 from potrace import Bitmap
 from PIL import Image, ImageDraw, ImageFilter
 import numpy as np
@@ -10,6 +11,26 @@ def get_image_np(image_name):
 	image = Image.open(image_path)
 	return np.array(image.convert('RGB'))
 
+def chunk_image(image_np, destination):
+	print('chunk')
+	chunk = 0
+	chunk_size = 20
+	image = Image.fromarray(image_np)
+	width, height = image.size
+	output_filenames = []
+	for row in range(0, height, chunk_size):
+		for col in range(0, width, chunk_size):
+			box = (col, row, col + width, row + height)
+			a = image.crop(box)
+			output = a.crop((0,0,chunk_size,chunk_size))
+			filename = destination + '/chunk-' + str(chunk) + '.jpg'
+			output_filenames.append(filename)
+			output.save(filename, quality=80, optimize=True, progressive=True)
+			chunk +=1
+
+	with open(destination + '/manifest.json', 'w') as outfile:
+		json.dump(output_filenames, outfile)
+	
 def extract_box(destination, image_np, coords, suffix = ''):
 	image = Image.fromarray(np.uint8(image_np)).convert('RGB')
 	image.save(destination + '/rest.jpg', 'JPEG', optimize=True, quality=8)
