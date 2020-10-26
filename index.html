@@ -197,16 +197,37 @@
 				container.append(image)
 			})
 
-			fetch('https://cors-anywhere.herokuapp.com/https://raw.githubusercontent.com/RandomStudio/creative-compression/master/imagery/progressive/lucy_progressive.jpg', {
-				headers: {
-					'Range': 'bytes=0-20000',
-				},
-			}).then(response => {
-				return response.blob();
-			}).then(blob => {
-				const imgEl = document.querySelector('.progressive .adjusted img')
-				imgEl.src = URL.createObjectURL(blob);
-			});
+			let blobParts = [];
+			let startChunk = 0
+			let isLoading = false
+			const imgEl = document.querySelector('.progressive .adjusted img')
+			const loadImageChunk = () => {
+				if (isLoading) {
+					return;
+				}
+				console.log('loading')
+				isLoading = true;
+				const endChunk = startChunk + 20000
+				fetch('https://random-static.s3.eu-central-1.amazonaws.com/lucy_progressive.jpg', {
+					headers: {
+						'Range': `bytes=${startChunk}-${endChunk}`,
+					},
+				}).then(response => {
+					return response.blob();
+				}).then(newBlob => {
+					blobParts.push(newBlob);
+					startChunk = endChunk + 1
+					imgEl.src = URL.createObjectURL(new Blob(blobParts, { type: "text/plain" }));
+					isLoading = false;
+				});
+			};
+
+			imgEl.addEventListener('mouseover', () => {
+				if (isLoading) {
+					return;
+				}
+				loadImageChunk()
+			})
 		</script>
 	</body>
 </html>
