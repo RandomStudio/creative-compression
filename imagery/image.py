@@ -80,22 +80,40 @@ def distance(col1, col2):
 	(r2, g2, b2) = col2
 	return (r1 - r2)**2 + (g1 - g2) ** 2 + (b1 - b2) ** 2
 
+def get_colors(img, numcolors=10, resize=150):
+    img = img.copy()
+    img.thumbnail((resize, resize))
+
+    # Reduce to palette
+    paletted = img.convert('P', palette=Image.ADAPTIVE, colors=numcolors)
+
+    # Find dominant colors
+    palette = paletted.getpalette()
+    color_counts = sorted(paletted.getcolors(), reverse=True)
+    colors = list()
+    for i in range(numcolors):
+        palette_index = color_counts[i][1]
+        dominant_color = palette[palette_index*3:palette_index*3+3]
+        colors.append(tuple(dominant_color))
+
+    return colors
 
 # https://github.com/SystemErrorWang/White-box-Cartoonization
 def vectorize_image(image_np, destination):
 	image = Image.fromarray(image_np).convert('RGB')
 	width, height = image.size
 
-	refColours = ([
-		[86, 29, 37],
-		[206, 129, 71],
-		[236, 221, 123],
-		[33, 161, 121],
-		[4, 31, 30],
-		[68, 94, 147],
-		[229, 234, 250]
-	])
-
+	refColours = get_colors(image)
+	#refColours = ([
+	#	[86, 29, 37],
+	#	[206, 129, 71],
+	#	[236, 221, 123],
+	#	[33, 161, 121],
+	#	[4, 31, 30],
+	#	[68, 94, 147],
+	#	[229, 234, 250]
+	#])
+	
 	pixels = image.load()
 
 	for i in range(width):
@@ -144,4 +162,4 @@ def vectorize_image(image_np, destination):
 	output = (np.squeeze(output)+1)*127.5
 	output = np.clip(output, 0, 255).astype(np.uint8)
 
-	Image.fromarray(output).save(destination + '/background.png', 'PNG')
+	Image.fromarray(output).save(destination + '/background.jpg', 'JPEG', optimize=True, quality=50)
