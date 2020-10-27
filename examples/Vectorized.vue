@@ -37,13 +37,13 @@ export default {
 	  }
   },
   mounted () {
-	fetch(`/assets/${this.name}/coords.json`)
+	fetch(`assets/${this.name}/coords.json`)
 		.then(async response => await response.json())
 		.then(coords => {
 			this.overlays = coords.map((coords, index) => {
 				const [top, left, width, height] = coords;
 				return {
-					src: `/assets/${this.name}/crop${index}.jpg`,
+					src: `assets/${this.name}/crop${index}.jpg`,
 					style: `
 						top: ${top * 100}%;
 						left: ${left * 100}%;
