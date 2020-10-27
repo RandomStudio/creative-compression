@@ -1,6 +1,7 @@
 <template>
     <Comparison>
-      <template v-slot:title>Direction 3: Abstract Tesselation</template>
+      <template v-slot:title>Direction 1</template>
+      <template v-slot:subtitle>Abstract Tesselation</template>
       <template v-slot:before>
 		  <ImageWithDetails caption="JPEG of Office" src="./masks_office/normal.jpg" />
 	  </template>

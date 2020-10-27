@@ -1,8 +1,11 @@
 <template>
-    <div class="image">
-		<img ref="image" :src="src" @load="onLoad"/>
+	<div class="container">
+		<div class="image">
+			<img ref="image" :src="src" @load="onLoad"/>
+			<slot></slot>
+		</div>
 		<p class="caption">{{caption}}</p>
-    </div>
+	</div>
 </template>
 
 <script>
@@ -19,6 +22,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.container,
 .image {
 	width: 100%;
 }

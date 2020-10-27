@@ -27,11 +27,14 @@ export default {
   --line-height: 1.4;
   --line: (1em * var(--line-height));
   line-height: var(--line-height);
-  font-family: 'Times New Roman', Times, serif;
+  font-family: 'Times New Roman', 'Palatino', 'Palatino Linotype', Times, serif;
   position: relative;
-  background: repeating-linear-gradient(to bottom, currentColor 0, currentColor calc(0.55 * var(--line)), transparent calc(0.551 * var(--line)), transparent calc(1 * var(--line)));
+  background: repeating-linear-gradient(to bottom, currentColor 0, currentColor calc(0.5 * var(--line)), transparent calc(0.51 * var(--line)), transparent calc(1 * var(--line)));
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  font-weight: 500;
+  text-transform: uppercase;
+  padding: 0 20px;
 
   &::after {
     position: absolute;
@@ -39,10 +42,14 @@ export default {
     left: 0;
     right: 0;
     bottom: 0;
-    font-family: Palatino Linotype, Comic Sans;
-    background: repeating-linear-gradient(to bottom, transparent 0, transparent calc(0.55 * var(--line)), currentColor calc(0.551 * var(--line)), currentColor calc(1 * var(--line)));
+    font-family: 'Palatino', 'Palatino Linotype', 'Times New Roman', Times, serif;
+    background: repeating-linear-gradient(to bottom, transparent 0, transparent calc(0.5 * var(--line)), currentColor calc(0.51 * var(--line)), currentColor calc(1 * var(--line)));
     background-clip: text;
     content: attr(content);
+    // Palatino adjustments
+    font-size: 0.994em;
+    text-align: center;
+    letter-spacing: -0.02em;
   }
 }
 </style>

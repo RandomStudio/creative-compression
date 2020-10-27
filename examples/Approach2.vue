@@ -1,27 +1,33 @@
 <template>
-    <Comparison>
-      <template v-slot:title>Direction 2: Abstract Tesselation</template>
+  <div>
+    <Comparison :title="['Direction 2', 'Structured LOD']">
+      <template v-slot:subtitle></template>
       <template v-slot:before>
-		  <ImageWithDetails caption="JPEG of Office" src="./masks_office/normal.jpg" />
-	  </template>
+        <ImageWithDetails
+          caption="JPEG of Office"
+          src="./assets/vectorize_office/normal.jpg"
+        />
+      </template>
       <template v-slot:after>
-		  <ImageWithDetails caption="JPEG of Office" src="./masks_office/normal.jpg" />
-		</template>
+        <Vectorized name="vectorize_office"></Vectorized>
+      </template>
     </Comparison>
+  </div>
 </template>
 
 <script>
 import Comparison from "./Comparison.vue";
 import ImageWithDetails from "./ImageWithDetails.vue";
-import Vue from 'vue';
+import Vectorized from "./Vectorized.vue";
+import Vue from "vue";
 
 export default {
   components: {
-	Comparison,
-	ImageWithDetails,
+    Comparison,
+    ImageWithDetails,
+    Vectorized
   },
 };
 </script>
 <style lang="scss" scoped>
-
 </style>

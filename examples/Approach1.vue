@@ -1,27 +1,57 @@
 <template>
-    <Comparison>
-      <template v-slot:title>Direction 1: Abstract Tesselation</template>
+  <div>
+    <Comparison :title="['Direction 1', 'Object aware simplification']">
+      <template v-slot:subtitle>Extracting key objects using Object Detection model, simplifying background with White Box Cartoonization ML model trained on anime dataset</template>
       <template v-slot:before>
-		  <ImageWithDetails caption="JPEG of Office" src="./masks_office/normal.jpg" />
-	  </template>
+        <ImageWithDetails
+          caption="JPEG of Office"
+          src="./assets/vectorize_office/normal.jpg"
+        />
+      </template>
       <template v-slot:after>
-		  <ImageWithDetails caption="JPEG of Office" src="./masks_office/normal.jpg" />
-		</template>
+        <Vectorized name="vectorize_office"></Vectorized>
+      </template>
     </Comparison>
+    <Comparison>
+      <template v-slot:subtitle>Further processing the background layer, limiting it to 7 user defined colours</template>
+      <template v-slot:before>
+        <ImageWithDetails
+          caption="JPEG of Office"
+          src="./assets/vectorize_office_2/normal.jpg"
+        />
+      </template>
+      <template v-slot:after>
+        <Vectorized name="vectorize_office_2"></Vectorized>
+      </template>
+    </Comparison>
+    <Comparison>
+      <template v-slot:subtitle>Applying heavy denoise filtering before tracing and limiting it to a palette of dominant colours extracted from image itself</template>
+      <template v-slot:before>
+        <ImageWithDetails
+          caption="JPEG of Office"
+          src="./assets/vectorize_office_3/normal.jpg"
+        />
+      </template>
+      <template v-slot:after>
+        <Vectorized name="vectorize_office_3"></Vectorized>
+      </template>
+    </Comparison>
+  </div>
 </template>
 
 <script>
 import Comparison from "./Comparison.vue";
 import ImageWithDetails from "./ImageWithDetails.vue";
-import Vue from 'vue';
+import Vectorized from "./Vectorized.vue";
+import Vue from "vue";
 
 export default {
   components: {
-	Comparison,
-	ImageWithDetails,
+    Comparison,
+    ImageWithDetails,
+    Vectorized
   },
 };
 </script>
 <style lang="scss" scoped>
-
 </style>
