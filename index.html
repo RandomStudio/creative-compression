@@ -200,6 +200,14 @@
 				<img src="imagery/playground/vectorize_office_2/background.jpg" />
 			</div>
 		</div>
+		<div class="grid vectorize vectorize_2">
+			<div class="container" data-size="134kb">
+				<img src="imagery/playground/vectorize_office_3/normal.jpg" />
+			</div>
+			<div class="container adjusted office_3" data-size="89kb">
+				<img src="imagery/playground/vectorize_office_3/background.jpg" />
+			</div>
+		</div>
 		<h2>Downloading progressively encoded JPEG images bit by bit</h2>
 		<div class="grid progressive">
 			<div class="container" data-size="116kb">
@@ -216,6 +224,16 @@
 				<img src="imagery/progressive/lucy.jpg" />
 			</div>
 			<div class="container adjusted lucy" data-size="1300kb"></div>
+		</div>
+		<h2>Progressively load focus</h2>
+		<div class="grid focus">
+			<div class="container" data-size="116kb">
+				<img src="imagery/playground/focus/office_cropped.jpg" />
+			</div>
+			<div class="container adjusted office" data-size="12kb">
+				<img src="imagery/playground/focus/background.jpg" />
+				<img src="#" />
+			</div>
 		</div>
 		<script type="text/javascript">
 			const headings = document.querySelectorAll('h2');
@@ -285,6 +303,19 @@
 				const [top, left, width, height] = coords;
 				const image = document.createElement('img')
 				image.src = `imagery/playground/vectorize_office_2/crop${index}.jpg`
+				image.style = `
+					top: ${top * 100}%;
+					left: ${left * 100}%;
+					width: ${width}%;
+					height: ${height}%;
+				`
+				container.append(image)
+			})
+			container = document.querySelector('.vectorize .office_3')
+			JSON.parse(json).map((coords, index) => {
+				const [top, left, width, height] = coords;
+				const image = document.createElement('img')
+				image.src = `imagery/playground/vectorize_office_3/crop${index}.jpg`
 				image.style = `
 					top: ${top * 100}%;
 					left: ${left * 100}%;

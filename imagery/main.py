@@ -1,5 +1,5 @@
 from detect import generate_boxes, generate_masks
-from image import chunk_image, extract_box, extract_mask, get_image_np, vectorize_image
+from image import chunk_image, crop_focus_area, extract_box, extract_mask, get_image_np, vectorize_image
 from model import load_model
 import numpy as np
 import os
@@ -16,11 +16,12 @@ MODES = {
 	'CHUNKED_IMAGE': 'CHUNKED_IMAGE',
 	'LAYERED_BOX': 'LAYERED_BOX',
 	'LAYERED_MASK': 'LAYERED_MASK',
+	'PROGRESSIVE_FOCUS': 'PROGRESSIVE_FOCUS',
 	'VECTOR_BACKGROUND': 'VECTOR_BACKGROUND',
 }
 
 CACHE_PATH = 'cache/'
-MODE = MODES['VECTOR_BACKGROUND']
+MODE = MODES['PROGRESSIVE_FOCUS']
 
 
 detect_fn = load_model()
@@ -53,6 +54,14 @@ for image_name in os.listdir('./images/'):
 
 		for index, box_np in enumerate(masks_np):
 			extract_mask(destination, image_np, box_np, str(index))
+
+	if MODE == MODES['PROGRESSIVE_FOCUS']:
+		destination = 'playground/focus'
+		if not os.path.exists(destination):
+			os.makedirs(destination)
+
+		boxes_coords = generate_boxes(detect_fn, image_np, cache_location)
+		crop_focus_area(destination, image_np, boxes_coords)
 
 	if MODE == MODES['VECTOR_BACKGROUND']:
 		destination = 'playground/vectorize'

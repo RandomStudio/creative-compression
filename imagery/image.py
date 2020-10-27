@@ -1,3 +1,4 @@
+import io
 import tensorflow.compat.v1 as tf
 import cartoonize.guided_filter as guided_filter
 import cartoonize.network as network
@@ -37,6 +38,24 @@ def chunk_image(image_np, destination):
 	with open(destination + '/manifest.json', 'w') as outfile:
 		json.dump(output_filenames, outfile)
 
+def crop_focus_area(destination, image_np, boxes_coords):
+	image = Image.fromarray(np.uint8(image_np)).convert('RGB')
+	width, height = image.size
+
+	# left, top, right, bottom
+	dimensions = [width, height, 0, 0]
+	for coords in boxes_coords:
+		ymin, xmin, ymax, xmax = coords
+		offsets = (xmin * width, ymin * height, xmax * width, ymax * height)
+		for index, position in enumerate(offsets):
+			if index <= 1 and position < dimensions[index]:
+				dimensions[index] = position
+			if index > 1 and position > dimensions[index]:
+				dimensions[index] = position
+
+	image_crop = image.crop(dimensions)
+	image_crop.save(destination + '/normal.jpg', 'JPEG', optimize=True, quality=80, progressive=True)
+	image.save(destination + '/background.jpg', 'JPEG', optimize=True, quality=10, progressive=True)
 
 def extract_box(destination, image_np, coords, suffix=''):
 	image = Image.fromarray(np.uint8(image_np)).convert('RGB')
@@ -50,8 +69,7 @@ def extract_box(destination, image_np, coords, suffix=''):
 								  ymin * height, ymax * height)
 
 	image_crop = image.crop((left, top, right, bottom))
-	image_crop.save(destination + '/crop' + suffix +
-					'.jpg', optimize=True, quality=80)
+	image_crop.save(destination + '/crop' + suffix + '.jpg', optimize=True, quality=80)
 
 	crop_width, crop_height = image_crop.size
 
