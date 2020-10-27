@@ -20,7 +20,7 @@ MODES = {
 }
 
 CACHE_PATH = 'cache/'
-MODE = MODES['CHUNKED_IMAGE']
+MODE = MODES['VECTOR_BACKGROUND']
 
 
 detect_fn = load_model()
