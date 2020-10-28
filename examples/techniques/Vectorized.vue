@@ -16,7 +16,6 @@
 </template>
 
 <script>
-import SplitText from "./SplitText.vue";
 import Vue from 'vue';
 
 export default {

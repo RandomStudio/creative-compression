@@ -8884,7 +8884,7 @@ function patchScopedSlots (instance) {
   }
 }
 
-},{}],"SplitText.vue":[function(require,module,exports) {
+},{}],"techniques/SplitText.vue":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8918,14 +8918,14 @@ var _default = {
 
 };
 exports.default = _default;
-        var $feb7c9 = exports.default || module.exports;
+        var $16c2bb = exports.default || module.exports;
       
-      if (typeof $feb7c9 === 'function') {
-        $feb7c9 = $feb7c9.options;
+      if (typeof $16c2bb === 'function') {
+        $16c2bb = $16c2bb.options;
       }
     
         /* template */
-        Object.assign($feb7c9, (function () {
+        Object.assign($16c2bb, (function () {
           var render = function() {
   var _vm = this
   var _h = _vm.$createElement
@@ -8949,7 +8949,7 @@ render._withStripped = true
             render: render,
             staticRenderFns: staticRenderFns,
             _compiled: true,
-            _scopeId: "data-v-feb7c9",
+            _scopeId: "data-v-16c2bb",
             functional: undefined
           };
         })());
@@ -8962,9 +8962,9 @@ render._withStripped = true
         if (api.compatible) {
           module.hot.accept();
           if (!module.hot.data) {
-            api.createRecord('$feb7c9', $feb7c9);
+            api.createRecord('$16c2bb', $16c2bb);
           } else {
-            api.reload('$feb7c9', $feb7c9);
+            api.reload('$16c2bb', $16c2bb);
           }
         }
 
@@ -8983,7 +8983,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _SplitText = _interopRequireDefault(require("./SplitText.vue"));
+var _SplitText = _interopRequireDefault(require("./techniques/SplitText.vue"));
 
 var _vue = _interopRequireDefault(require("vue"));
 
@@ -9083,7 +9083,7 @@ render._withStripped = true
       
       }
     })();
-},{"./SplitText.vue":"SplitText.vue","vue":"node_modules/vue/dist/vue.runtime.esm.js","_css_loader":"node_modules/parcel-bundler/src/builtins/css-loader.js","vue-hot-reload-api":"node_modules/vue-hot-reload-api/dist/index.js"}],"ImageWithDetails.vue":[function(require,module,exports) {
+},{"./techniques/SplitText.vue":"techniques/SplitText.vue","vue":"node_modules/vue/dist/vue.runtime.esm.js","_css_loader":"node_modules/parcel-bundler/src/builtins/css-loader.js","vue-hot-reload-api":"node_modules/vue-hot-reload-api/dist/index.js"}],"ImageWithDetails.vue":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -9091,7 +9091,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _SplitText = _interopRequireDefault(require("./SplitText.vue"));
+var _SplitText = _interopRequireDefault(require("./techniques/SplitText.vue"));
 
 var _vue = _interopRequireDefault(require("vue"));
 
@@ -9181,15 +9181,13 @@ render._withStripped = true
       
       }
     })();
-},{"./SplitText.vue":"SplitText.vue","vue":"node_modules/vue/dist/vue.runtime.esm.js","_css_loader":"node_modules/parcel-bundler/src/builtins/css-loader.js","vue-hot-reload-api":"node_modules/vue-hot-reload-api/dist/index.js"}],"Vectorized.vue":[function(require,module,exports) {
+},{"./techniques/SplitText.vue":"techniques/SplitText.vue","vue":"node_modules/vue/dist/vue.runtime.esm.js","_css_loader":"node_modules/parcel-bundler/src/builtins/css-loader.js","vue-hot-reload-api":"node_modules/vue-hot-reload-api/dist/index.js"}],"techniques/Vectorized.vue":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-
-var _SplitText = _interopRequireDefault(require("./SplitText.vue"));
 
 var _vue = _interopRequireDefault(require("vue"));
 
@@ -9235,11 +9233,11 @@ var _default = {
   },
 
   mounted() {
-    fetch(`/assets/${this.name}/coords.json`).then(async response => await response.json()).then(coords => {
+    fetch(`assets/${this.name}/coords.json`).then(async response => await response.json()).then(coords => {
       this.overlays = coords.map((coords, index) => {
         const [top, left, width, height] = coords;
         return {
-          src: `/assets/${this.name}/crop${index}.jpg`,
+          src: `assets/${this.name}/crop${index}.jpg`,
           style: `
 						top: ${top * 100}%;
 						left: ${left * 100}%;
@@ -9253,14 +9251,14 @@ var _default = {
 
 };
 exports.default = _default;
-        var $b77946 = exports.default || module.exports;
+        var $92711c = exports.default || module.exports;
       
-      if (typeof $b77946 === 'function') {
-        $b77946 = $b77946.options;
+      if (typeof $92711c === 'function') {
+        $92711c = $92711c.options;
       }
     
         /* template */
-        Object.assign($b77946, (function () {
+        Object.assign($92711c, (function () {
           var render = function() {
   var _vm = this
   var _h = _vm.$createElement
@@ -9313,7 +9311,7 @@ render._withStripped = true
             render: render,
             staticRenderFns: staticRenderFns,
             _compiled: true,
-            _scopeId: "data-v-b77946",
+            _scopeId: "data-v-92711c",
             functional: undefined
           };
         })());
@@ -9326,9 +9324,9 @@ render._withStripped = true
         if (api.compatible) {
           module.hot.accept();
           if (!module.hot.data) {
-            api.createRecord('$b77946', $b77946);
+            api.createRecord('$92711c', $92711c);
           } else {
-            api.reload('$b77946', $b77946);
+            api.reload('$92711c', $92711c);
           }
         }
 
@@ -9339,7 +9337,7 @@ render._withStripped = true
       
       }
     })();
-},{"./SplitText.vue":"SplitText.vue","vue":"node_modules/vue/dist/vue.runtime.esm.js","_css_loader":"node_modules/parcel-bundler/src/builtins/css-loader.js","vue-hot-reload-api":"node_modules/vue-hot-reload-api/dist/index.js"}],"Approach1.vue":[function(require,module,exports) {
+},{"vue":"node_modules/vue/dist/vue.runtime.esm.js","_css_loader":"node_modules/parcel-bundler/src/builtins/css-loader.js","vue-hot-reload-api":"node_modules/vue-hot-reload-api/dist/index.js"}],"Approach1.vue":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -9351,7 +9349,7 @@ var _Comparison = _interopRequireDefault(require("./Comparison.vue"));
 
 var _ImageWithDetails = _interopRequireDefault(require("./ImageWithDetails.vue"));
 
-var _Vectorized = _interopRequireDefault(require("./Vectorized.vue"));
+var _Vectorized = _interopRequireDefault(require("./techniques/Vectorized.vue"));
 
 var _vue = _interopRequireDefault(require("vue"));
 
@@ -9573,7 +9571,198 @@ render._withStripped = true
       
       }
     })();
-},{"./Comparison.vue":"Comparison.vue","./ImageWithDetails.vue":"ImageWithDetails.vue","./Vectorized.vue":"Vectorized.vue","vue":"node_modules/vue/dist/vue.runtime.esm.js","_css_loader":"node_modules/parcel-bundler/src/builtins/css-loader.js","vue-hot-reload-api":"node_modules/vue-hot-reload-api/dist/index.js"}],"Approach2.vue":[function(require,module,exports) {
+},{"./Comparison.vue":"Comparison.vue","./ImageWithDetails.vue":"ImageWithDetails.vue","./techniques/Vectorized.vue":"techniques/Vectorized.vue","vue":"node_modules/vue/dist/vue.runtime.esm.js","_css_loader":"node_modules/parcel-bundler/src/builtins/css-loader.js","vue-hot-reload-api":"node_modules/vue-hot-reload-api/dist/index.js"}],"techniques/LOD.vue":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _vue = _interopRequireDefault(require("vue"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+var _default = {
+  props: ['name'],
+
+  data() {
+    return {
+      background: {
+        blobParts: [],
+        nextChunkOffset: 0,
+        src: ''
+      },
+      foreground: {
+        blobParts: [],
+        nextChunkOffset: 0,
+        src: ''
+      },
+      interval: null,
+      layout: {}
+    };
+  },
+
+  methods: {
+    cancelForeground() {
+      window.clearInterval(this.interval);
+    },
+
+    loadChunk(fileSrc, target, chunkSize = 5000) {
+      const {
+        blobParts,
+        nextChunkOffset
+      } = this[target];
+      const endChunk = nextChunkOffset + chunkSize;
+      fetch(fileSrc, {
+        headers: {
+          'Range': `bytes=${nextChunkOffset}-${endChunk}`
+        }
+      }).then(async response => {
+        if (!response.ok) {
+          throw Error('File complete');
+        }
+
+        return await response.blob();
+      }).then(newBlob => {
+        this[target].blobParts.push(newBlob);
+        this[target].nextChunkOffset = endChunk + 1;
+        this[target].src = URL.createObjectURL(new Blob(blobParts, {
+          type: "text/plain"
+        }));
+      }).catch(err => {
+        console.log(err);
+      });
+    },
+
+    loadBackgroundChunk() {
+      this.loadChunk(`./assets/${this.name}/background.jpg`, 'background');
+    },
+
+    loadForeground() {
+      this.interval = window.setInterval(() => {
+        this.loadChunk(`./assets/${this.name}/crop.jpg`, 'foreground', 6000);
+      }, 500);
+    }
+
+  },
+
+  mounted() {
+    fetch(`assets/${this.name}/coords.json`).then(async response => await response.json()).then(({
+      top,
+      left,
+      width,
+      height
+    }) => {
+      this.layout = `
+					top: ${top}%;
+					left: ${left}%;
+					width: ${width}%;
+					height: ${height}%;
+				`;
+    });
+    this.loadBackgroundChunk();
+  }
+
+};
+exports.default = _default;
+        var $32671a = exports.default || module.exports;
+      
+      if (typeof $32671a === 'function') {
+        $32671a = $32671a.options;
+      }
+    
+        /* template */
+        Object.assign($32671a, (function () {
+          var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "container" }, [
+    _c(
+      "div",
+      {
+        ref: "image",
+        staticClass: "image",
+        on: { mouseover: _vm.loadForeground, mouseleave: _vm.cancelForeground }
+      },
+      [
+        _vm.background.nextChunkOffset > 0
+          ? _c("img", {
+              staticClass: "background",
+              attrs: { src: _vm.background.src }
+            })
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.foreground.nextChunkOffset > 0 && _vm.layout
+          ? _c("img", {
+              staticClass: "foreground",
+              style: _vm.layout,
+              attrs: { src: _vm.foreground.src }
+            })
+          : _vm._e()
+      ]
+    ),
+    _vm._v(" "),
+    _c("p", [
+      _vm._v(
+        "Loaded size: " +
+          _vm._s(
+            Math.floor(
+              (_vm.background.nextChunkOffset +
+                _vm.foreground.nextChunkOffset) /
+                1000
+            )
+          ) +
+          "kb"
+      )
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+          return {
+            render: render,
+            staticRenderFns: staticRenderFns,
+            _compiled: true,
+            _scopeId: "data-v-32671a",
+            functional: undefined
+          };
+        })());
+      
+    /* hot reload */
+    (function () {
+      if (module.hot) {
+        var api = require('vue-hot-reload-api');
+        api.install(require('vue'));
+        if (api.compatible) {
+          module.hot.accept();
+          if (!module.hot.data) {
+            api.createRecord('$32671a', $32671a);
+          } else {
+            api.reload('$32671a', $32671a);
+          }
+        }
+
+        
+        var reloadCSS = require('_css_loader');
+        module.hot.dispose(reloadCSS);
+        module.hot.accept(reloadCSS);
+      
+      }
+    })();
+},{"vue":"node_modules/vue/dist/vue.runtime.esm.js","_css_loader":"node_modules/parcel-bundler/src/builtins/css-loader.js","vue-hot-reload-api":"node_modules/vue-hot-reload-api/dist/index.js"}],"Approach2.vue":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -9585,7 +9774,7 @@ var _Comparison = _interopRequireDefault(require("./Comparison.vue"));
 
 var _ImageWithDetails = _interopRequireDefault(require("./ImageWithDetails.vue"));
 
-var _Vectorized = _interopRequireDefault(require("./Vectorized.vue"));
+var _LOD = _interopRequireDefault(require("./techniques/LOD.vue"));
 
 var _vue = _interopRequireDefault(require("vue"));
 
@@ -9612,7 +9801,7 @@ var _default = {
   components: {
     Comparison: _Comparison.default,
     ImageWithDetails: _ImageWithDetails.default,
-    Vectorized: _Vectorized.default
+    LOD: _LOD.default
   }
 };
 exports.default = _default;
@@ -9648,7 +9837,7 @@ exports.default = _default;
                 _c("ImageWithDetails", {
                   attrs: {
                     caption: "JPEG of Office",
-                    src: "./assets/vectorize_office/normal.jpg"
+                    src: "./assets/focus_office/normal.jpg"
                   }
                 })
               ]
@@ -9658,7 +9847,7 @@ exports.default = _default;
           {
             key: "after",
             fn: function() {
-              return [_c("Vectorized", { attrs: { name: "vectorize_office" } })]
+              return [_c("LOD", { attrs: { name: "focus_office" } })]
             },
             proxy: true
           }
@@ -9701,7 +9890,7 @@ render._withStripped = true
       
       }
     })();
-},{"./Comparison.vue":"Comparison.vue","./ImageWithDetails.vue":"ImageWithDetails.vue","./Vectorized.vue":"Vectorized.vue","vue":"node_modules/vue/dist/vue.runtime.esm.js","_css_loader":"node_modules/parcel-bundler/src/builtins/css-loader.js","vue-hot-reload-api":"node_modules/vue-hot-reload-api/dist/index.js"}],"Approach3.vue":[function(require,module,exports) {
+},{"./Comparison.vue":"Comparison.vue","./ImageWithDetails.vue":"ImageWithDetails.vue","./techniques/LOD.vue":"techniques/LOD.vue","vue":"node_modules/vue/dist/vue.runtime.esm.js","_css_loader":"node_modules/parcel-bundler/src/builtins/css-loader.js","vue-hot-reload-api":"node_modules/vue-hot-reload-api/dist/index.js"}],"Approach3.vue":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -9843,13 +10032,12 @@ var _Approach2 = _interopRequireDefault(require("./Approach2.vue"));
 
 var _Approach3 = _interopRequireDefault(require("./Approach3.vue"));
 
-var _SplitText = _interopRequireDefault(require("./SplitText.vue"));
+var _SplitText = _interopRequireDefault(require("./techniques/SplitText.vue"));
 
 var _vue = _interopRequireDefault(require("vue"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-//
 //
 //
 //
@@ -9911,9 +10099,7 @@ exports.default = _default;
       _vm._v(" "),
       _c("Approach1"),
       _vm._v(" "),
-      _c("Approach2"),
-      _vm._v(" "),
-      _c("Approach3")
+      _c("Approach2")
     ],
     1
   )
@@ -9951,7 +10137,7 @@ render._withStripped = true
       
       }
     })();
-},{"./Approach1.vue":"Approach1.vue","./Approach2.vue":"Approach2.vue","./Approach3.vue":"Approach3.vue","./SplitText.vue":"SplitText.vue","vue":"node_modules/vue/dist/vue.runtime.esm.js","_css_loader":"node_modules/parcel-bundler/src/builtins/css-loader.js","vue-hot-reload-api":"node_modules/vue-hot-reload-api/dist/index.js"}],"index.js":[function(require,module,exports) {
+},{"./Approach1.vue":"Approach1.vue","./Approach2.vue":"Approach2.vue","./Approach3.vue":"Approach3.vue","./techniques/SplitText.vue":"techniques/SplitText.vue","vue":"node_modules/vue/dist/vue.runtime.esm.js","_css_loader":"node_modules/parcel-bundler/src/builtins/css-loader.js","vue-hot-reload-api":"node_modules/vue-hot-reload-api/dist/index.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
 var _vue = _interopRequireDefault(require("vue"));
@@ -9991,7 +10177,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55577" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60972" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

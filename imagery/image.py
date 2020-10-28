@@ -4,7 +4,7 @@ import cartoonize.guided_filter as guided_filter
 import cartoonize.network as network
 import json
 from potrace import Bitmap
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageCms, ImageFilter
 import numpy as np
 from matplotlib import cm, colors, pyplot as plt
 import os
@@ -15,7 +15,11 @@ from sklearn.cluster import MiniBatchKMeans
 def get_image_np(image_name):
 	image_path = 'images/' + image_name
 	image = Image.open(image_path)
-	return np.array(image.convert('RGB'))
+	iccProfile = image.info.get('icc_profile')
+	iccBytes = io.BytesIO(iccProfile)
+	originalColorProfile = ImageCms.ImageCmsProfile(iccBytes)
+
+	return (np.array(image.convert('RGB')), originalColorProfile)
 
 
 def chunk_image(image_np, destination):
@@ -54,8 +58,23 @@ def crop_focus_area(destination, image_np, boxes_coords):
 				dimensions[index] = position
 
 	image_crop = image.crop(dimensions)
-	image_crop.save(destination + '/normal.jpg', 'JPEG', optimize=True, quality=80, progressive=True)
+	image_crop.save(destination + '/crop.jpg', 'JPEG', optimize=True, quality=80, progressive=True)
+	image.save(destination + '/normal.jpg', 'JPEG', optimize=True, quality=80)
 	image.save(destination + '/background.jpg', 'JPEG', optimize=True, quality=10, progressive=True)
+
+	with open(destination + '/coords.json', 'w') as outfile:
+		left, top = dimensions[:2]
+		crop_width, crop_height = image_crop.size
+
+		focus_width = (crop_width / width) * 100
+		focus_height = (crop_height / height) * 100
+
+		json.dump({
+			"top": (top / height) * 100,
+			"left": (left / width) * 100,
+			"width": focus_width,
+			"height": focus_height
+		}, outfile)
 
 def extract_box(destination, image_np, coords, suffix=''):
 	image = Image.fromarray(np.uint8(image_np)).convert('RGB')
@@ -117,7 +136,7 @@ def get_colors(img, numcolors=10, resize=150):
     return colors
 
 # https://github.com/SystemErrorWang/White-box-Cartoonization
-def vectorize_image(image_np, destination):
+def vectorize_image(image_np, destination, icc_profile):
 	image = Image.fromarray(image_np).convert('RGB')
 	width, height = image.size
 
@@ -180,4 +199,4 @@ def vectorize_image(image_np, destination):
 	output = (np.squeeze(output)+1)*127.5
 	output = np.clip(output, 0, 255).astype(np.uint8)
 
-	Image.fromarray(output).save(destination + '/background.jpg', 'JPEG', optimize=True, quality=50)
+	Image.fromarray(output).save(destination + '/background.jpg', 'JPEG', optimize=True, quality=50, icc_profile=icc_profile.tobytes())

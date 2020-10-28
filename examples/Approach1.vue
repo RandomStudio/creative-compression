@@ -42,7 +42,7 @@
 <script>
 import Comparison from "./Comparison.vue";
 import ImageWithDetails from "./ImageWithDetails.vue";
-import Vectorized from "./Vectorized.vue";
+import Vectorized from "./techniques/Vectorized.vue";
 import Vue from "vue";
 
 export default {

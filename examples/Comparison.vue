@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import SplitText from "./SplitText.vue";
+import SplitText from "./techniques/SplitText.vue";
 import Vue from 'vue';
 
 export default {
