@@ -1,7 +1,7 @@
 <template>
 	<div class="container">
 		<div class="image">
-			<img ref="image" :src="src" @load="onLoad"/>
+			<img ref="image" :src="src" />
 			<slot></slot>
 		</div>
 		<p class="caption">{{caption}}</p>
@@ -14,11 +14,6 @@ import Vue from 'vue';
 
 export default {
   props: ['src', 'caption'],
-  methods: {
-	onLoad () {
-		console.log(this.$refs.image)
-	}
-  }
 };
 </script>
 <style lang="scss" scoped>

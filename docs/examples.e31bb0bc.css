@@ -111,9 +111,7 @@ img[data-v-07cd4a] {
 .foreground[data-v-32671a] {
   position: absolute;
 }
-.has-borders[data-v-32671a] {
-  border: 1px solid white;
-}
-.is-hidden[data-v-32671a] {
-  opacity: 0;
+.no-background[data-v-32671a] {
+  border: 1px solid #333;
+  min-height: 45vw;
 }

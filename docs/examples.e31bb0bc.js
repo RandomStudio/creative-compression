@@ -9108,13 +9108,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 //
 var _default = {
-  props: ['src', 'caption'],
-  methods: {
-    onLoad() {
-      console.log(this.$refs.image);
-    }
-
-  }
+  props: ['src', 'caption']
 };
 exports.default = _default;
         var $07cd4a = exports.default || module.exports;
@@ -9134,11 +9128,7 @@ exports.default = _default;
       "div",
       { staticClass: "image" },
       [
-        _c("img", {
-          ref: "image",
-          attrs: { src: _vm.src },
-          on: { load: _vm.onLoad }
-        }),
+        _c("img", { ref: "image", attrs: { src: _vm.src } }),
         _vm._v(" "),
         _vm._t("default")
       ],
@@ -9594,17 +9584,36 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 //
 var _default = {
-  props: ['name'],
+  props: {
+    bgChunkSize: {
+      type: Number,
+      default: 5000
+    },
+    hasBackground: {
+      type: Boolean,
+      default: true
+    },
+    hasForeground: {
+      type: Boolean,
+      default: true
+    },
+    name: {
+      type: String,
+      required: true
+    }
+  },
 
   data() {
     return {
       background: {
         blobParts: [],
+        isLoading: false,
         nextChunkOffset: 0,
         src: ''
       },
       foreground: {
         blobParts: [],
+        isLoading: false,
         nextChunkOffset: 0,
         src: ''
       },
@@ -9615,15 +9624,17 @@ var _default = {
 
   methods: {
     cancelForeground() {
+      console.log(this.interval);
       window.clearInterval(this.interval);
     },
 
-    loadChunk(fileSrc, target, chunkSize = 5000) {
+    loadChunk(fileSrc, target, chunkSize) {
       const {
         blobParts,
         nextChunkOffset
       } = this[target];
       const endChunk = nextChunkOffset + chunkSize;
+      this[target].isLoading = true;
       fetch(fileSrc, {
         headers: {
           'Range': `bytes=${nextChunkOffset}-${endChunk}`
@@ -9640,37 +9651,55 @@ var _default = {
         this[target].src = URL.createObjectURL(new Blob(blobParts, {
           type: "text/plain"
         }));
+        this[target].isLoading = false;
       }).catch(err => {
         console.log(err);
       });
     },
 
     loadBackgroundChunk() {
-      this.loadChunk(`./assets/${this.name}/background.jpg`, 'background');
+      if (!this.hasBackground) {
+        return;
+      }
+
+      this.loadChunk(`./assets/${this.name}/background.jpg`, 'background', this.bgChunkSize);
     },
 
     loadForeground() {
+      if (!this.hasForeground || this.interval) {
+        return;
+      }
+
       this.interval = window.setInterval(() => {
+        console.log('Load chunk');
         this.loadChunk(`./assets/${this.name}/crop.jpg`, 'foreground', 6000);
       }, 500);
+    },
+
+    loadLayout() {
+      if (!this.hasForeground) {
+        return;
+      }
+
+      fetch(`assets/${this.name}/coords.json`).then(async response => await response.json()).then(({
+        top,
+        left,
+        width,
+        height
+      }) => {
+        this.layout = `
+						top: ${top}%;
+						left: ${left}%;
+						width: ${width}%;
+						height: ${height}%;
+					`;
+      });
     }
 
   },
 
   mounted() {
-    fetch(`assets/${this.name}/coords.json`).then(async response => await response.json()).then(({
-      top,
-      left,
-      width,
-      height
-    }) => {
-      this.layout = `
-					top: ${top}%;
-					left: ${left}%;
-					width: ${width}%;
-					height: ${height}%;
-				`;
-    });
+    this.loadLayout();
     this.loadBackgroundChunk();
   }
 
@@ -9693,7 +9722,7 @@ exports.default = _default;
       "div",
       {
         ref: "image",
-        staticClass: "image",
+        class: "image " + (_vm.hasBackground ? "" : "no-background"),
         on: { mouseover: _vm.loadForeground, mouseleave: _vm.cancelForeground }
       },
       [
@@ -9797,6 +9826,30 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 var _default = {
   components: {
     Comparison: _Comparison.default,
@@ -9826,7 +9879,11 @@ exports.default = _default;
           {
             key: "subtitle",
             fn: function() {
-              return undefined
+              return [
+                _vm._v(
+                  "Using the `Range: bytes=` content header to abort downloading of progressively encoding JPEGs early"
+                )
+              ]
             },
             proxy: true
           },
@@ -9836,7 +9893,7 @@ exports.default = _default;
               return [
                 _c("ImageWithDetails", {
                   attrs: {
-                    caption: "JPEG of Office",
+                    caption: "JPEG of Office, 130kb",
                     src: "./assets/focus_office/normal.jpg"
                   }
                 })
@@ -9847,7 +9904,93 @@ exports.default = _default;
           {
             key: "after",
             fn: function() {
-              return [_c("LOD", { attrs: { name: "focus_office" } })]
+              return [
+                _c("LOD", {
+                  attrs: {
+                    bgChunkSize: 20000,
+                    hasForeground: false,
+                    name: "focus_office"
+                  }
+                })
+              ]
+            },
+            proxy: true
+          }
+        ])
+      }),
+      _vm._v(" "),
+      _c("Comparison", {
+        scopedSlots: _vm._u([
+          {
+            key: "subtitle",
+            fn: function() {
+              return [
+                _vm._v(
+                  "By adjust range passed and concatenating returned blobs, we can control level of detail loaded programmatically. Below image loads 20kb each time a cursor hovers it."
+                )
+              ]
+            },
+            proxy: true
+          },
+          {
+            key: "before",
+            fn: function() {
+              return [
+                _c("ImageWithDetails", {
+                  attrs: {
+                    caption: "JPEG of Office, 130kb",
+                    src: "./assets/focus_office_2/normal.jpg"
+                  }
+                })
+              ]
+            },
+            proxy: true
+          },
+          {
+            key: "after",
+            fn: function() {
+              return [
+                _c("LOD", {
+                  attrs: { hasBackground: false, name: "focus_office_2" }
+                })
+              ]
+            },
+            proxy: true
+          }
+        ])
+      }),
+      _vm._v(" "),
+      _c("Comparison", {
+        scopedSlots: _vm._u([
+          {
+            key: "subtitle",
+            fn: function() {
+              return [
+                _vm._v(
+                  "Using object bounding box detection to create a 'focus/foreground' layer. Keeping background image bytes loaded to absolute minimum. Progressively loading foreground on user hover."
+                )
+              ]
+            },
+            proxy: true
+          },
+          {
+            key: "before",
+            fn: function() {
+              return [
+                _c("ImageWithDetails", {
+                  attrs: {
+                    caption: "JPEG of Office, 130kb",
+                    src: "./assets/focus_office_3/normal.jpg"
+                  }
+                })
+              ]
+            },
+            proxy: true
+          },
+          {
+            key: "after",
+            fn: function() {
+              return [_c("LOD", { attrs: { name: "focus_office_3" } })]
             },
             proxy: true
           }
@@ -10177,7 +10320,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60972" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61744" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

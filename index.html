@@ -361,7 +361,6 @@
 					if (!response.ok) {
 						throw Error('File complete');
 					}
-					console.log(response.headers)
 					return response.blob();
 				}).then(newBlob => {
 					blobParts.push(newBlob);
