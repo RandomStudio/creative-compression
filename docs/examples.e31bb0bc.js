@@ -9671,7 +9671,6 @@ var _default = {
       }
 
       this.interval = window.setInterval(() => {
-        console.log('Load chunk');
         this.loadChunk(`./assets/${this.name}/crop.jpg`, 'foreground', 6000);
       }, 500);
     },

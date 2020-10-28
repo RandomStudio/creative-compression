@@ -9,7 +9,7 @@
         />
       </template>
       <template v-slot:after>
-        <LOD :bgChunkSize="20000" :hasForeground="false" name="focus_office"></LOD>
+        <LOD :bgChunkSize="10000" :hasForeground="false" name="focus_office"></LOD>
       </template>
     </Comparison>
     <Comparison>
