@@ -50,8 +50,8 @@ export default {
 	},
 	methods: {
 		cancelForeground() {
-			console.log(this.interval)
 			window.clearInterval(this.interval)
+			this.interval = null;
 		},
 		loadChunk(fileSrc, target, chunkSize) {
 			const { blobParts, nextChunkOffset, } = this[target]
