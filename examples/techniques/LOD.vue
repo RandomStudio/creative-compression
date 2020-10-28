@@ -122,6 +122,7 @@ export default {
 }
 .no-background {
 	border: 1px solid #333;
-	min-height: 45vw;
+	height: 45vw;
+	max-height: 550px;
 }
 </style>
