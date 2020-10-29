@@ -1,4 +1,5 @@
 import io
+import binascii
 import tensorflow.compat.v1 as tf
 import cartoonize.guided_filter as guided_filter
 import cartoonize.network as network
@@ -6,8 +7,7 @@ import json
 from potrace import Bitmap
 from PIL import Image, ImageCms, ImageFilter
 import numpy as np
-from matplotlib import cm, colors, pyplot as plt
-import os
+import re
 import cv2
 from sklearn.cluster import MiniBatchKMeans
 
@@ -42,10 +42,59 @@ def chunk_image(image_np, destination):
 	with open(destination + '/manifest.json', 'w') as outfile:
 		json.dump(output_filenames, outfile)
 
+def get_scan_offsets(destination):
+	with open(destination + '/layered.jpg', 'rb') as f:
+		content = f.read()
+
+	hex = binascii.hexlify(content)
+	hexStrings = [hex[i:i+2].decode('utf-8') for i in range(0, len(hex), 2)]
+
+	found_marker = True
+	scan_open = False
+	offsets = []
+	scan = {
+		"start": 0,
+		"scan": 0,
+		"end": 0,
+	}
+	
+	for (offset, hex) in enumerate(hexStrings):
+		if hex != 'ff' and found_marker == False:
+			continue
+		
+		## JPEG markers all start with a FF byte
+		if hex == 'ff':
+			found_marker = True
+			continue
+
+		# JPEG markers are made of 2 bytes. Following stops non headers being counted
+		if hex == '00':
+			found_marker = False
+			continue
+		if hex[0] == 'd' and hex[1].isnumeric() and int(hex[1]) <= 7:
+			found_marker = False
+			continue
+		
+		# Offset should start from beginning of FF marker
+		offset = offset - 1
+		if scan_open == True:
+			scan['end'] = offset
+			offsets.append(scan.copy())
+			scan['start'] = offset
+			scan_open = False
+
+		if str(hex) == 'da':
+			scan['scan'] = offset
+			scan_open = True
+
+		found_marker = False
+
+	with open(destination + '/offsets.json', 'w') as outfile:
+		json.dump(offsets, outfile)
+
 def crop_focus_area(destination, image_np, boxes_coords):
 	image = Image.fromarray(np.uint8(image_np)).convert('RGB')
 	width, height = image.size
-
 	# left, top, right, bottom
 	dimensions = [width, height, 0, 0]
 	for coords in boxes_coords:
@@ -59,7 +108,7 @@ def crop_focus_area(destination, image_np, boxes_coords):
 
 	image_crop = image.crop(dimensions)
 	image_crop.save(destination + '/crop.jpg', 'JPEG', optimize=True, quality=80, progressive=True)
-	image.save(destination + '/normal.jpg', 'JPEG', optimize=True, quality=80)
+	image.save(destination + '/normal.jpg', 'JPEG', optimize=True, quality=80, progressive=True)
 	image.save(destination + '/background.jpg', 'JPEG', optimize=True, quality=10, progressive=True)
 
 	with open(destination + '/coords.json', 'w') as outfile:
@@ -173,7 +222,6 @@ def vectorize_image(image_np, destination, icc_profile):
 	quant = clt.cluster_centers_.astype("uint8")[labels]
 	quant = quant.reshape((height, width, 3))
 	quant_np = cv2.cvtColor(quant, cv2.COLOR_LAB2BGR)
-
 	tf.disable_eager_execution()
 	tf.reset_default_graph()
 
@@ -193,7 +241,8 @@ def vectorize_image(image_np, destination, icc_profile):
 	sess.run(tf.global_variables_initializer())
 	saver.restore(sess, tf.train.latest_checkpoint('cartoonize/saved_models'))
 
-	batch_image = quant_np.astype(np.float32) / 127.5 - 1
+	batch_image = image_np.astype(np.float32) / 127.5 - 1
+	print(batch_image.size, batch_image.shape)
 	batch_image = np.expand_dims(batch_image, axis=0)
 	output = sess.run(final_out, feed_dict={input_photo: batch_image})
 	output = (np.squeeze(output)+1)*127.5

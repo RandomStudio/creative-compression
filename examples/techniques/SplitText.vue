@@ -32,6 +32,7 @@ export default {
   background: repeating-linear-gradient(to bottom, currentColor 0, currentColor calc(0.5 * var(--line)), transparent calc(0.51 * var(--line)), transparent calc(1 * var(--line)));
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
   font-weight: 500;
   text-transform: uppercase;
   padding: 0 20px;
@@ -45,6 +46,7 @@ export default {
     font-family: 'Palatino', 'Palatino Linotype', 'Times New Roman', Times, serif;
     background: repeating-linear-gradient(to bottom, transparent 0, transparent calc(0.5 * var(--line)), currentColor calc(0.51 * var(--line)), currentColor calc(1 * var(--line)));
     background-clip: text;
+    -webkit-background-clip: text;
     content: attr(content);
     // Palatino adjustments
     font-size: 0.994em;

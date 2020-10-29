@@ -1,25 +1,29 @@
 <template>
-    <Comparison>
-      <template v-slot:title>Direction 1</template>
-      <template v-slot:subtitle>Abstract Tesselation</template>
+    <Comparison :title="['Refinement 1', 'Targeted LOD']">
+      <template v-slot:subtitle>Manipulating byte offsets to only load important details</template>
       <template v-slot:before>
-		  <ImageWithDetails caption="JPEG of Office" src="./masks_office/normal.jpg" />
-	  </template>
+        <ImageWithDetails
+          caption="JPEG of Office, 130kb"
+          src="./assets/targeted/normal.jpg"
+        />
+      </template>
       <template v-slot:after>
-		  <ImageWithDetails caption="JPEG of Office" src="./masks_office/normal.jpg" />
-		</template>
+        <Targeted :chunkSize="466 * 2" name="targeted" />
+      </template>
     </Comparison>
 </template>
 
 <script>
 import Comparison from "./Comparison.vue";
 import ImageWithDetails from "./ImageWithDetails.vue";
+import Targeted from "./techniques/Targeted.vue";
 import Vue from 'vue';
 
 export default {
   components: {
     Comparison,
     ImageWithDetails,
+    Targeted,
   },
 };
 </script>

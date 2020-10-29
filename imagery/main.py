@@ -1,7 +1,6 @@
 from detect import generate_boxes, generate_masks
-from image import chunk_image, crop_focus_area, extract_box, extract_mask, get_image_np, vectorize_image
+from image import chunk_image, crop_focus_area, extract_box, extract_mask, get_image_np, get_scan_offsets, vectorize_image
 from model import load_model
-import numpy as np
 from glob import glob
 import os
 import json
@@ -64,6 +63,7 @@ for image_path in glob('./images/*.jpg') + glob('./images/*.png'):
 
 		boxes_coords = generate_boxes(detect_fn, image_np, cache_location)
 		crop_focus_area(destination, image_np, boxes_coords)
+		get_scan_offsets(destination)
 
 	if MODE == MODES['VECTOR_BACKGROUND']:
 		destination = 'playground/vectorize/' + image_name

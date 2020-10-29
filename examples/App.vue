@@ -6,6 +6,7 @@
     </div>
     <Approach1></Approach1>
     <Approach2></Approach2>
+    <Approach3></Approach3>
   </div>
 </template>
 
