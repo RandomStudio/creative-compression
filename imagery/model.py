@@ -80,14 +80,13 @@ def detect_objects_in_image(image_np, detect_fn):
 
 	detections = dict(itertools.islice(detections.items(), num_detections))
 	detections['num_detections'] = num_detections
-
 	# Handle models with masks:
 	if "detection_masks" in detections:
 			# Reframe the the bbox mask to the image size.
 			detection_masks_reframed = utils_ops.reframe_box_masks_to_image_masks(
 						detections["detection_masks"][0], detections["detection_boxes"][0],
 						image_np.shape[0], image_np.shape[1])      
-			detection_masks_reframed = tf.cast(detection_masks_reframed > 0.5,
+			detections['detection_masks_reframed'] = tf.cast(detection_masks_reframed > 0.5,
 																		tf.uint8)
 
 	return detections

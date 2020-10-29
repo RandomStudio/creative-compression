@@ -5,7 +5,7 @@ import cartoonize.guided_filter as guided_filter
 import cartoonize.network as network
 import json
 from potrace import Bitmap
-from PIL import Image, ImageCms, ImageFilter
+from PIL import Image, ImageCms, ImageOps, ImageFilter
 import numpy as np
 import re
 import cv2
@@ -23,7 +23,6 @@ def get_image_np(image_name):
 
 
 def chunk_image(image_np, destination):
-	print('chunk')
 	chunk = 0
 	chunk_size = 20
 	image = Image.fromarray(image_np)
@@ -92,38 +91,86 @@ def get_scan_offsets(destination):
 	with open(destination + '/offsets.json', 'w') as outfile:
 		json.dump(offsets, outfile)
 
-def crop_focus_area(destination, image_np, boxes_coords):
-	image = Image.fromarray(np.uint8(image_np)).convert('RGB')
-	width, height = image.size
+def crop_focus_area(destination, image_np, boxes_coords, mask_nps):
+	original = Image.fromarray(np.uint8(image_np)).convert('RGB')
+	width, height = original.size
+
 	# left, top, right, bottom
 	dimensions = [width, height, 0, 0]
+	background = original.copy()
+	background = background.resize((8, 8),resample=Image.BILINEAR)
+	background = background.resize((width, height), Image.NEAREST)
+
+	layerGroups = []
 	for coords in boxes_coords:
 		ymin, xmin, ymax, xmax = coords
 		offsets = (xmin * width, ymin * height, xmax * width, ymax * height)
-		for index, position in enumerate(offsets):
-			if index <= 1 and position < dimensions[index]:
-				dimensions[index] = position
-			if index > 1 and position > dimensions[index]:
-				dimensions[index] = position
 
-	image_crop = image.crop(dimensions)
-	image_crop.save(destination + '/crop.jpg', 'JPEG', optimize=True, quality=80, progressive=True)
-	image.save(destination + '/normal.jpg', 'JPEG', optimize=True, quality=80, progressive=True)
-	image.save(destination + '/background.jpg', 'JPEG', optimize=True, quality=10, progressive=True)
+		layers = []
+		for step in range(1, 5):
+			[left, top, right, bottom] = offsets
+			box_width = right - left
+			box_height = bottom - top
+			temp_left = int(left - (step * (box_width / 5)))
+			temp_right = int(right + (step * (box_width / 5)))
+			temp_top = int(top - (step * (box_height / 5)))
+			temp_bottom = int(bottom + (step * (box_height / 5)))
 
-	with open(destination + '/coords.json', 'w') as outfile:
-		left, top = dimensions[:2]
-		crop_width, crop_height = image_crop.size
+			size = int(box_width / step)
+			imgSmall = original.copy().resize((size, size), resample=Image.BILINEAR)
+			imgSmall = imgSmall.resize(original.size, Image.NEAREST)
+			imgSmall = imgSmall.crop([temp_left, temp_top, temp_right, temp_bottom])
+			layers.append((imgSmall, int(temp_left), int(temp_top)))
+		
+		layerGroups.append(layers)
+	
+	allLayers = [val for tup in zip(*layerGroups) for val in tup]
+	allLayers.reverse()
+	for (image, left, top) in allLayers:
+		background.paste(image, (left, top))
 
-		focus_width = (crop_width / width) * 100
-		focus_height = (crop_height / height) * 100
+	for mask_np in mask_nps:
+		mask = Image.fromarray(np.uint8(mask_np)).convert('L')
+		background = Image.composite(original, background, mask).convert('RGB')
 
-		json.dump({
-			"top": (top / height) * 100,
-			"left": (left / width) * 100,
-			"width": focus_width,
-			"height": focus_height
-		}, outfile)
+#		layers = []
+#		for step in range(5, 1, -1):
+#			[left, top, right, bottom] = dimensions.copy()
+#			difference = [left / step, top / step, width - ((width - right) / step), height - ((height - bottom) / step)]
+#			print(difference)
+#			temp_width = 100 / step
+#			temp_height = 100 / step
+#			imgSmall = normal.copy().resize((int(temp_width), int(temp_height)),resample=Image.BILINEAR)
+#			imgSmall = ImageOps.expand(imgSmall, border=1, fill='#000000')
+#			imgSmall = imgSmall.resize(image.size, Image.NEAREST)
+#			imgSmall = imgSmall.crop(difference)
+#
+#			[left, top, right, bottom] = difference
+#			layers.append((imgSmall, int(left), int(top)))
+#
+#		layerGroups.append(layers)
+#
+#	allLayers = [val for tup in zip(*layerGroups) for val in tup]
+#	for (layerImage, layerLeft, layerTop) in allLayers:
+#		image.paste(layerImage, (layerLeft, layerTop))
+#
+#	#for (layerImage, layerLeft, layerTop) in layers:
+#	#		image.paste(layerImage, (layerLeft, layerTop)) 
+#
+#	#[left, top, right, bottom] = dimensions
+#	#close_crop = normal.copy().crop(dimensions)
+#	#close_crop = close_crop.resize((int(width / 4), int(width / 4)),resample=Image.BILINEAR)
+#	#close_crop = close_crop.resize((int(right - left), int(bottom - top)), Image.NEAREST)
+#	#image.paste(close_crop, (int(left), int(top)))
+#
+#	for coords in boxes_coords:
+#		ymin, xmin, ymax, xmax = coords
+#		offsets = (xmin * width, ymin * height, xmax * width, ymax * height)
+#		box = normal.copy().crop(offsets)
+#		image.paste(box, (int(xmin * width), int(ymin * height)))
+#
+	background.save(destination + '/image.jpg', 'JPEG', optimize=True, quality=80, progressive=True)
+	original.save(destination + '/normal.jpg', 'JPEG', optimize=True, quality=80, progressive=True)
 
 def extract_box(destination, image_np, coords, suffix=''):
 	image = Image.fromarray(np.uint8(image_np)).convert('RGB')
@@ -167,22 +214,22 @@ def distance(col1, col2):
 	return (r1 - r2)**2 + (g1 - g2) ** 2 + (b1 - b2) ** 2
 
 def get_colors(img, numcolors=10, resize=150):
-    img = img.copy()
-    img.thumbnail((resize, resize))
+	img = img.copy()
+	img.thumbnail((resize, resize))
 
-    # Reduce to palette
-    paletted = img.convert('P', palette=Image.ADAPTIVE, colors=numcolors)
+	# Reduce to palette
+	paletted = img.convert('P', palette=Image.ADAPTIVE, colors=numcolors)
 
-    # Find dominant colors
-    palette = paletted.getpalette()
-    color_counts = sorted(paletted.getcolors(), reverse=True)
-    colors = list()
-    for i in range(numcolors):
-        palette_index = color_counts[i][1]
-        dominant_color = palette[palette_index*3:palette_index*3+3]
-        colors.append(tuple(dominant_color))
+	# Find dominant colors
+	palette = paletted.getpalette()
+	color_counts = sorted(paletted.getcolors(), reverse=True)
+	colors = list()
+	for i in range(numcolors):
+		palette_index = color_counts[i][1]
+		dominant_color = palette[palette_index*3:palette_index*3+3]
+		colors.append(tuple(dominant_color))
 
-    return colors
+	return colors
 
 # https://github.com/SystemErrorWang/White-box-Cartoonization
 def vectorize_image(image_np, destination, icc_profile):
@@ -242,7 +289,6 @@ def vectorize_image(image_np, destination, icc_profile):
 	saver.restore(sess, tf.train.latest_checkpoint('cartoonize/saved_models'))
 
 	batch_image = image_np.astype(np.float32) / 127.5 - 1
-	print(batch_image.size, batch_image.shape)
 	batch_image = np.expand_dims(batch_image, axis=0)
 	output = sess.run(final_out, feed_dict={input_photo: batch_image})
 	output = (np.squeeze(output)+1)*127.5

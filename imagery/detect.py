@@ -33,6 +33,7 @@ def generate_masks(detect_fn, image_np, cache_location, max_highlights=None):
 	detections = do_inference(detect_fn, image_np, cache_location)
 
 	masks_np = []
+	print(detections['detection_masks_reframed'])
 	for index, detection_mask in enumerate(detections.get('detection_masks_reframed')):
 		if detections["detection_scores"][0][index] > 0.8 and index < max_highlights:
 			masks_np.append(image_np.shape[0] * detection_mask)

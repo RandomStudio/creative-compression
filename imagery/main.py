@@ -62,8 +62,8 @@ for image_path in glob('./images/*.jpg') + glob('./images/*.png'):
 			os.makedirs(destination)
 
 		boxes_coords = generate_boxes(detect_fn, image_np, cache_location)
-		crop_focus_area(destination, image_np, boxes_coords)
-		get_scan_offsets(destination)
+		mask_nps = generate_masks(detect_fn, image_np, cache_location, max_highlights=5)
+		crop_focus_area(destination, image_np, boxes_coords, mask_nps)
 
 	if MODE == MODES['VECTOR_BACKGROUND']:
 		destination = 'playground/vectorize/' + image_name
