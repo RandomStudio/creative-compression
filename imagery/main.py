@@ -23,6 +23,10 @@ MODES = {
 CACHE_PATH = 'cache/'
 MODE = MODES['PROGRESSIVE_FOCUS']
 
+if not os.path.exists(CACHE_PATH):
+	os.makedirs(CACHE_PATH)
+
+
 
 detect_fn = load_model()
 for image_path in glob('./images/*.jpg') + glob('./images/*.png'):

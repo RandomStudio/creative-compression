@@ -15,6 +15,7 @@ from sklearn.cluster import MiniBatchKMeans
 def get_image_np(image_name):
 	image_path = 'images/' + image_name
 	image = Image.open(image_path)
+
 	iccProfile = image.info.get('icc_profile')
 	iccBytes = io.BytesIO(iccProfile)
 	originalColorProfile = ImageCms.ImageCmsProfile(iccBytes)
@@ -130,8 +131,9 @@ def crop_focus_area(destination, image_np, boxes_coords, mask_nps):
 		background.paste(image, (left, top))
 
 	for mask_np in mask_nps:
-		mask = Image.fromarray(np.uint8(mask_np)).convert('L')
-		background = Image.composite(original, background, mask).convert('RGB')
+		mask = Image.fromarray(np.uint8(mask_np)).convert('L').point(lambda x: 0 if x < 128 else 255, '1')
+		print(mask.size)
+		background = Image.composite(original, background, mask)
 
 #		layers = []
 #		for step in range(5, 1, -1):
@@ -169,7 +171,11 @@ def crop_focus_area(destination, image_np, boxes_coords, mask_nps):
 #		box = normal.copy().crop(offsets)
 #		image.paste(box, (int(xmin * width), int(ymin * height)))
 #
-	background.save(destination + '/image.jpg', 'JPEG', optimize=True, quality=80, progressive=True)
+	background.save(destination + '/bg.jpg', 'JPEG', optimize=True, quality=80, progressive=True)
+	#target.convert('RGB').save(destination + '/target.jpg', 'JPEG', optimize=True, quality=80, progressive=True)
+	#background.convert('RGBA')
+	#background.paste(target, (0, 0))
+	background.convert('RGB').save(destination + '/image.jpg', 'JPEG', optimize=True, quality=80, progressive=True)
 	original.save(destination + '/normal.jpg', 'JPEG', optimize=True, quality=80, progressive=True)
 
 def extract_box(destination, image_np, coords, suffix=''):
