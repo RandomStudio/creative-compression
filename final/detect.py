@@ -16,26 +16,17 @@ def do_inference(detect_fn, image_np, cache_location):
 	#image_np_with_detections = visualize_detections(image_np, detections, category_index)
 	return cache['cached_detections']
 
-def generate_boxes(detect_fn, image_np, cache_location):
+def generate_boxes_and_masks(detect_fn, image_np, cache_location, max_highlights=None):
 	detections = do_inference(detect_fn, image_np, cache_location)
 
-	boxes_coords = []
-	for index, detection_mask in enumerate(detections.get('detection_boxes')[0]):
-		if detections["detection_scores"][0][index] > 0.7:
-			boxes_coords.append(np.asarray(detection_mask).tolist())
-
-	return boxes_coords
-
-def generate_masks(detect_fn, image_np, cache_location, max_highlights=None):
-	detections = do_inference(detect_fn, image_np, cache_location)
-
-	masks_np = []
-	print(detections['detection_masks_reframed'])
+	boxes = []
+	masks = []
 	for index, detection_mask in enumerate(detections.get('detection_masks_reframed')):
-		if detections["detection_scores"][0][index] > 0.8 and index < max_highlights:
-			masks_np.append(image_np.shape[0] * detection_mask)
+		if detections["detection_scores"][0][index] > 0.8 and (max_highlights == None or index < max_highlights):
+			boxes.append(np.asarray(detections.get('detection_boxes')[0][index]).tolist())
+			masks.append(image_np.shape[0] * detection_mask)
 
-	return masks_np
+	return (boxes, masks)
 
 def visualize_detections(image_np, detections, category_index):
 	image_np_with_detections = image_np.copy()

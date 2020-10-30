@@ -1,5 +1,5 @@
-from detect import generate_boxes, generate_masks
-from image import crop_focus_area, get_image_np
+from detect import generate_boxes_and_masks
+from image import compose_focus_effect, get_image_np
 from model import load_model
 from glob import glob
 import os
@@ -31,9 +31,8 @@ def main():
 			print('Loading {}... '.format(image_name))
 			image_np = get_image_np(image_name)
 
-			boxes_coords = generate_boxes(detect_fn, image_np, cache_file)
-			mask_nps = generate_masks(detect_fn, image_np, cache_file, max_highlights=5)
-			crop_focus_area(destination, image_np, boxes_coords, mask_nps)
+			boxes_and_masks = generate_boxes_and_masks(detect_fn, image_np, cache_file)
+			compose_focus_effect(destination, image_np, boxes_and_masks)
 
 			print('Completed ' + image_name)
 
