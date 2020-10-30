@@ -6,14 +6,12 @@
     </div>
     <Approach1></Approach1>
     <Approach2></Approach2>
-    <Approach3></Approach3>
   </div>
 </template>
 
 <script>
 import Approach1 from "./Approach1.vue";
 import Approach2 from "./Approach2.vue";
-import Approach3 from "./Approach3.vue";
 import SplitText from "./techniques/SplitText.vue";
 import Vue from "vue";
 
@@ -21,7 +19,6 @@ export default Vue.extend({
   components: {
     Approach1,
     Approach2,
-    Approach3,
     SplitText,
   },
   data() {

@@ -10032,345 +10032,7 @@ render._withStripped = true
       
       }
     })();
-},{"./Comparison.vue":"Comparison.vue","./ImageWithDetails.vue":"ImageWithDetails.vue","./techniques/LOD.vue":"techniques/LOD.vue","vue":"node_modules/vue/dist/vue.runtime.esm.js","_css_loader":"node_modules/parcel-bundler/src/builtins/css-loader.js","vue-hot-reload-api":"node_modules/vue-hot-reload-api/dist/index.js"}],"techniques/Targeted.vue":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _vue = _interopRequireDefault(require("vue"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-//
-//
-//
-//
-//
-//
-//
-var _default = {
-  props: {
-    chunkSize: {
-      type: Number,
-      default: 5000
-    },
-    name: {
-      type: String,
-      required: true
-    }
-  },
-  computed: {
-    size() {
-      return `${Math.floor(this.nextChunkOffset / 1000)}kb`;
-    },
-
-    src() {
-      return `./assets/${this.name}/image.jpg`;
-    }
-
-  },
-
-  data() {
-    return {
-      blobParts: [],
-      blobUrl: '',
-      isComplete: false,
-      isLoading: false,
-      interval: null,
-      nextChunkOffset: 0,
-      offsets: [],
-      scan: 0
-    };
-  },
-
-  methods: {
-    cancelInterval() {
-      window.clearInterval(this.interval);
-      this.interval = null;
-    },
-
-    // First scan fetches both image headers and scan data
-    async doInitialScan() {
-      const {
-        start,
-        scan,
-        end
-      } = this.offsets[0];
-      const chunk = await this.loadChunk(start, end);
-      const headers = chunk.slice(start, scan);
-      const scanChunk = chunk.slice(scan);
-      this.blobParts.push(headers);
-      this.blobParts.push(scanChunk);
-      this.blobUrl = URL.createObjectURL(new Blob(this.blobParts, {
-        type: "text/plain"
-      }));
-      this.scan = 1;
-    },
-
-    async doScan() {
-      const {
-        start,
-        scan,
-        end
-      } = this.offsets[this.scan];
-      const topOffsetPercentage = 20;
-      const bottomOffsetPercentage = 80;
-      const scanRange = end - scan;
-      const startOffset = Math.floor(scanRange / 100 * topOffsetPercentage);
-      const endOffset = Math.floor(scanRange / 100 * bottomOffsetPercentage);
-      const requestStart = start + startOffset;
-      const requestEnd = start + endOffset;
-      const headers = await this.loadChunk(start, scan - 1);
-      const chunk = await this.loadChunk(requestStart, requestEnd);
-      const startOffsetChunk = this.blobParts[1].slice(0, startOffset);
-      const endOffsetChunk = this.blobParts[1].slice(endOffset);
-      this.blobParts.push(headers);
-      this.blobParts.push(startOffsetChunk);
-      this.blobParts.push(chunk);
-      this.blobParts.push(endOffsetChunk);
-      this.blobUrl = URL.createObjectURL(new Blob(this.blobParts, {
-        type: "text/plain"
-      }));
-      this.scan += 1;
-    },
-
-    loadChunk(start, end) {
-      console.log(start, end);
-
-      if (this.isLoading) {
-        return;
-      }
-
-      this.isLoading = true;
-      return new Promise(resolve => {
-        fetch(this.src, {
-          headers: {
-            'Range': `bytes=${start}-${end}`
-          }
-        }).then(async response => {
-          if (!response.ok) {
-            throw Error(200);
-          }
-
-          return await response.blob();
-        }).then(newBlob => {
-          this.isLoading = false;
-          resolve(newBlob);
-        }).catch(err => {
-          console.log(err);
-
-          if (err === 200) {
-            this.isComplete = true;
-            return;
-          }
-        });
-      });
-    },
-
-    loadImage() {
-      if (this.interval) {
-        return;
-      } //this.interval = window.setInterval(this.loadChunk, 25);
-
-    },
-
-    async loadOffsets() {
-      const response = await fetch(`assets/${this.name}/offsets.json`);
-      this.offsets = await response.json();
-    }
-
-  },
-
-  async mounted() {
-    await this.loadOffsets();
-    await this.doInitialScan();
-  }
-
-};
-exports.default = _default;
-        var $e4a1e6 = exports.default || module.exports;
-      
-      if (typeof $e4a1e6 === 'function') {
-        $e4a1e6 = $e4a1e6.options;
-      }
-    
-        /* template */
-        Object.assign($e4a1e6, (function () {
-          var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
-    _c("img", {
-      staticClass: "image",
-      attrs: { src: _vm.blobUrl },
-      on: { click: _vm.doScan, mouseleave: _vm.cancelInterval }
-    }),
-    _vm._v(" "),
-    _c("p", [_vm._v("Loaded size: " + _vm._s(_vm.size))])
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-
-          return {
-            render: render,
-            staticRenderFns: staticRenderFns,
-            _compiled: true,
-            _scopeId: "data-v-e4a1e6",
-            functional: undefined
-          };
-        })());
-      
-    /* hot reload */
-    (function () {
-      if (module.hot) {
-        var api = require('vue-hot-reload-api');
-        api.install(require('vue'));
-        if (api.compatible) {
-          module.hot.accept();
-          if (!module.hot.data) {
-            api.createRecord('$e4a1e6', $e4a1e6);
-          } else {
-            api.reload('$e4a1e6', $e4a1e6);
-          }
-        }
-
-        
-        var reloadCSS = require('_css_loader');
-        module.hot.dispose(reloadCSS);
-        module.hot.accept(reloadCSS);
-      
-      }
-    })();
-},{"vue":"node_modules/vue/dist/vue.runtime.esm.js","_css_loader":"node_modules/parcel-bundler/src/builtins/css-loader.js","vue-hot-reload-api":"node_modules/vue-hot-reload-api/dist/index.js"}],"Approach3.vue":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _Comparison = _interopRequireDefault(require("./Comparison.vue"));
-
-var _ImageWithDetails = _interopRequireDefault(require("./ImageWithDetails.vue"));
-
-var _Targeted = _interopRequireDefault(require("./techniques/Targeted.vue"));
-
-var _vue = _interopRequireDefault(require("vue"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-var _default = {
-  components: {
-    Comparison: _Comparison.default,
-    ImageWithDetails: _ImageWithDetails.default,
-    Targeted: _Targeted.default
-  }
-};
-exports.default = _default;
-        var $1be62b = exports.default || module.exports;
-      
-      if (typeof $1be62b === 'function') {
-        $1be62b = $1be62b.options;
-      }
-    
-        /* template */
-        Object.assign($1be62b, (function () {
-          var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("Comparison", {
-    attrs: { title: ["Refinement 1", "Targeted LOD"] },
-    scopedSlots: _vm._u([
-      {
-        key: "subtitle",
-        fn: function() {
-          return [
-            _vm._v("Manipulating byte offsets to only load important details")
-          ]
-        },
-        proxy: true
-      },
-      {
-        key: "before",
-        fn: function() {
-          return [
-            _c("ImageWithDetails", {
-              attrs: {
-                caption: "JPEG of Office, 130kb",
-                src: "./assets/targeted/normal.jpg"
-              }
-            })
-          ]
-        },
-        proxy: true
-      },
-      {
-        key: "after",
-        fn: function() {
-          return [
-            _c("Targeted", { attrs: { chunkSize: 466 * 2, name: "targeted" } })
-          ]
-        },
-        proxy: true
-      }
-    ])
-  })
-}
-var staticRenderFns = []
-render._withStripped = true
-
-          return {
-            render: render,
-            staticRenderFns: staticRenderFns,
-            _compiled: true,
-            _scopeId: "data-v-1be62b",
-            functional: undefined
-          };
-        })());
-      
-    /* hot reload */
-    (function () {
-      if (module.hot) {
-        var api = require('vue-hot-reload-api');
-        api.install(require('vue'));
-        if (api.compatible) {
-          module.hot.accept();
-          if (!module.hot.data) {
-            api.createRecord('$1be62b', $1be62b);
-          } else {
-            api.reload('$1be62b', $1be62b);
-          }
-        }
-
-        
-        var reloadCSS = require('_css_loader');
-        module.hot.dispose(reloadCSS);
-        module.hot.accept(reloadCSS);
-      
-      }
-    })();
-},{"./Comparison.vue":"Comparison.vue","./ImageWithDetails.vue":"ImageWithDetails.vue","./techniques/Targeted.vue":"techniques/Targeted.vue","vue":"node_modules/vue/dist/vue.runtime.esm.js","_css_loader":"node_modules/parcel-bundler/src/builtins/css-loader.js","vue-hot-reload-api":"node_modules/vue-hot-reload-api/dist/index.js"}],"App.vue":[function(require,module,exports) {
+},{"./Comparison.vue":"Comparison.vue","./ImageWithDetails.vue":"ImageWithDetails.vue","./techniques/LOD.vue":"techniques/LOD.vue","vue":"node_modules/vue/dist/vue.runtime.esm.js","_css_loader":"node_modules/parcel-bundler/src/builtins/css-loader.js","vue-hot-reload-api":"node_modules/vue-hot-reload-api/dist/index.js"}],"App.vue":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10381,8 +10043,6 @@ exports.default = void 0;
 var _Approach = _interopRequireDefault(require("./Approach1.vue"));
 
 var _Approach2 = _interopRequireDefault(require("./Approach2.vue"));
-
-var _Approach3 = _interopRequireDefault(require("./Approach3.vue"));
 
 var _SplitText = _interopRequireDefault(require("./techniques/SplitText.vue"));
 
@@ -10401,12 +10061,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 //
 //
-//
 var _default = _vue.default.extend({
   components: {
     Approach1: _Approach.default,
     Approach2: _Approach2.default,
-    Approach3: _Approach3.default,
     SplitText: _SplitText.default
   },
 
@@ -10452,9 +10110,7 @@ exports.default = _default;
       _vm._v(" "),
       _c("Approach1"),
       _vm._v(" "),
-      _c("Approach2"),
-      _vm._v(" "),
-      _c("Approach3")
+      _c("Approach2")
     ],
     1
   )
@@ -10492,7 +10148,7 @@ render._withStripped = true
       
       }
     })();
-},{"./Approach1.vue":"Approach1.vue","./Approach2.vue":"Approach2.vue","./Approach3.vue":"Approach3.vue","./techniques/SplitText.vue":"techniques/SplitText.vue","vue":"node_modules/vue/dist/vue.runtime.esm.js","_css_loader":"node_modules/parcel-bundler/src/builtins/css-loader.js","vue-hot-reload-api":"node_modules/vue-hot-reload-api/dist/index.js"}],"index.js":[function(require,module,exports) {
+},{"./Approach1.vue":"Approach1.vue","./Approach2.vue":"Approach2.vue","./techniques/SplitText.vue":"techniques/SplitText.vue","vue":"node_modules/vue/dist/vue.runtime.esm.js","_css_loader":"node_modules/parcel-bundler/src/builtins/css-loader.js","vue-hot-reload-api":"node_modules/vue-hot-reload-api/dist/index.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
 var _vue = _interopRequireDefault(require("vue"));
@@ -10532,7 +10188,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54801" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64455" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

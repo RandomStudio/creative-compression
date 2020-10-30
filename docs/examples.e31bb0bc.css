@@ -118,16 +118,3 @@ img[data-v-07cd4a] {
   height: 45vw;
   max-height: 550px;
 }
-.image[data-v-e4a1e6],
-.background[data-v-e4a1e6] {
-  position: relative;
-  width: 100%;
-}
-.foreground[data-v-e4a1e6] {
-  position: absolute;
-}
-.no-background[data-v-e4a1e6] {
-  border: 1px solid #333;
-  height: 45vw;
-  max-height: 550px;
-}
