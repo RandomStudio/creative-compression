@@ -3,6 +3,7 @@ from image import compose_focus_effect, get_image_np
 from model import load_model
 from glob import glob
 import os
+from PIL import Image
 import tensorflow as tf
 import warnings
 
@@ -23,7 +24,7 @@ def main():
 		for image_path in glob('./input_images/*.' + extension):
 			image_name = os.path.basename(image_path)
 			cache_file = CACHE_PATH + image_name
-			destination = 'playground/focus/' + image_name
+			destination = 'output/' + image_name
 
 			if not os.path.exists(destination):
 				os.makedirs(destination)
@@ -31,7 +32,7 @@ def main():
 			print('Loading {}... '.format(image_name))
 			image_np = get_image_np(image_name)
 
-			boxes_and_masks = generate_boxes_and_masks(detect_fn, image_np, cache_file)
+			boxes_and_masks = generate_boxes_and_masks(detect_fn, image_np, cache_file, max_highlights=5)
 			compose_focus_effect(destination, image_np, boxes_and_masks)
 
 			print('Completed ' + image_name)
