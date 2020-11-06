@@ -1,20 +1,35 @@
 from PIL import Image, ImageCms, ImageOps
 from PIL import ImageFilter
 import numpy as np
+import os
 
 def get_image_np(image_name):
 	image_path = 'input_images/' + image_name
 	image = Image.open(image_path)
 	return np.array(image.convert('RGB'))
 
-def compose_focus_effect(destination, image_np, boxes_and_masks):
+def compose_focus_effect(image_name, image_np, boxes_and_masks):
+	destination = 'output/' + image_name
+
 	source = Image.fromarray(np.uint8(image_np))
 	background = create_background_layer(source)
 
 	(boxes, masks) = boxes_and_masks
+
+	if len(masks) < 1:
+		print('No masks found for composition, skipping.')
+		unsupported_destination = 'output/unsupported/' + image_name
+
+		if not os.path.exists(unsupported_destination):
+			os.makedirs(unsupported_destination)
+
+		save_versions(source, background, unsupported_destination)
+		return
+
 	box_overlays = create_bounding_box_overlays(boxes, source)
 	mask_overlays = create_mask_overlays(masks, source)
-	composition = compose_image(source, background, box_overlays, mask_overlays, destination)
+	composition, frames = compose_image(source, background, box_overlays, mask_overlays, destination)
+	save_animation(source, background, frames, destination)
 	save_versions(source, composition, destination)
 
 def create_background_layer(source):
@@ -95,17 +110,38 @@ def create_mask_overlays(mask_nps, source):
 	return masks
 
 def compose_image(source, background, box_overlays, mask_overlays, destination):
+	frames = []
 	source = source.copy()
 	composition = background.copy()
 
 	for (image, left, top) in box_overlays:
 		composition.paste(image, (left, top))
+		frames.append(composition.copy())
 
 	for i, mask in enumerate(mask_overlays):
 		composition = Image.composite(source, composition, mask)
+		frames.append(composition.copy())
 
-	return composition
+	return [composition, frames]
 
 def save_versions(source, composition, destination):
 	composition.save(destination + '/image.jpg', 'JPEG', optimize=True, quality=80, progressive=True)
 	source.save(destination + '/normal.jpg', 'JPEG', optimize=True, quality=80, progressive=True)
+
+def save_animation(source, background, frames, destination):
+	if not os.path.exists(destination):
+		os.makedirs(destination + '/frames')
+
+	animation = [source, background]
+	animation.extend(frames)
+	def resizeFrame(frame):
+		width, height = frame.size
+		newHeight = int((1920 / width) * height)
+		return frame.resize((1920, newHeight))
+	animation = [resizeFrame(frame) for frame in animation]
+	[frame.save(destination + '/frames/frame' +  str(index) + '.jpg', 'JPEG', optimize=True, quality=90, progressive=True) for index, frame in enumerate(animation)]
+	animation[0].save(destination + '/animation.webp',
+               save_all=True,
+               append_images=animation[1:],
+               duration=100,
+               loop=0)
