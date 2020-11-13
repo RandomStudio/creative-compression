@@ -1,5 +1,7 @@
-imagery/cache
-imagery/cache/*
-
-examples/.cache
-examples/node_modules
+cache
+__pycache__
+lib
+output
+bin
+static
+model
