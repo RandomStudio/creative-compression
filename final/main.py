@@ -1,10 +1,17 @@
 from detect import generate_boxes_and_masks
-from image import compose_focus_effect, get_image_np
+from image import compose_focus_effect, get_image_np, save_animation, save_versions
 from model import load_model
 from glob import glob
 import os
 import tensorflow as tf
 import warnings
+
+
+def process_image(image_np):
+	detect_fn = load_model()
+	(boxes, masks) = generate_boxes_and_masks(detect_fn, image_np, max_highlights=5)
+	source, background, composition, frames = compose_focus_effect(image_np, boxes, masks)
+	return composition
 
 def main():
 	CACHE_PATH = 'cache/'
@@ -27,9 +34,12 @@ def main():
 			print('Loading {}... '.format(image_name))
 			image_np = get_image_np(image_name)
 
-			boxes_and_masks = generate_boxes_and_masks(detect_fn, image_np, cache_file, max_highlights=5)
-			compose_focus_effect(image_name, image_np, boxes_and_masks)
-
+			(boxes, masks) = generate_boxes_and_masks(detect_fn, image_np, cache_file=cache_file, max_highlights=5)
+			source, background, composition, frames = compose_focus_effect(image_name, image_np, boxes, masks)
+			
+			destination = 'output/' + image_name
+			save_animation(source, background, frames, destination)
+			save_versions(source, composition, destination)
 			print('Completed ' + image_name)
 
 	print('Task complete')

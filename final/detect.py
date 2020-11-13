@@ -1,13 +1,12 @@
 from PIL import Image
 from model import detect_objects_in_image
 import numpy as np
-import shelve 
+import shelve
 import cv2
 
-from object_detection.utils import visualization_utils as vis_utils
-
 def do_inference(detect_fn, image_np, cache_location):
-
+	if cache_location == None:
+		return detect_objects_in_image(image_np, detect_fn)
 	cache = shelve.open(cache_location)
 	if 'cached_detections' in cache:
 		print('Loaded detections from cache.')
@@ -18,7 +17,7 @@ def do_inference(detect_fn, image_np, cache_location):
 	cache.sync()
 	return cache['cached_detections']
 
-def generate_boxes_and_masks(detect_fn, image_np, cache_location, max_highlights=None):
+def generate_boxes_and_masks(detect_fn, image_np, cache_location=None, max_highlights=None):
 	image = Image.fromarray(image_np.copy())
 	width, height = image.size
 	smallSize = (int((640 / height) * width), 640)

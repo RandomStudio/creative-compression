@@ -1,5 +1,4 @@
-from PIL import Image, ImageCms, ImageOps
-from PIL import ImageFilter
+from PIL import Image, ImageCms, ImageFilter
 import numpy as np
 import os
 
@@ -8,29 +7,14 @@ def get_image_np(image_name):
 	image = Image.open(image_path)
 	return np.array(image.convert('RGB'))
 
-def compose_focus_effect(image_name, image_np, boxes_and_masks):
-	destination = 'output/' + image_name
-
+def compose_focus_effect(image_np, boxes, masks):
 	source = Image.fromarray(np.uint8(image_np))
 	background = create_background_layer(source)
 
-	(boxes, masks) = boxes_and_masks
-
-	if len(masks) < 1:
-		print('No masks found for composition, skipping.')
-		unsupported_destination = 'output/unsupported/' + image_name
-
-		if not os.path.exists(unsupported_destination):
-			os.makedirs(unsupported_destination)
-
-		save_versions(source, background, unsupported_destination)
-		return
-
 	box_overlays = create_bounding_box_overlays(boxes, source)
 	mask_overlays = create_mask_overlays(masks, source)
-	composition, frames = compose_image(source, background, box_overlays, mask_overlays, destination)
-	save_animation(source, background, frames, destination)
-	save_versions(source, composition, destination)
+	composition, frames = compose_image(source, background, box_overlays, mask_overlays)
+	return source, background, composition, frames
 
 def create_background_layer(source):
 	background = source.copy()
@@ -109,7 +93,7 @@ def create_mask_overlays(mask_nps, source):
 
 	return masks
 
-def compose_image(source, background, box_overlays, mask_overlays, destination):
+def compose_image(source, background, box_overlays, mask_overlays):
 	frames = []
 	source = source.copy()
 	composition = background.copy()

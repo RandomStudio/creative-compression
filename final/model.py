@@ -29,8 +29,7 @@ def download_labels(filename):
 
 
 def load_model():
-	PATH_TO_MODEL_DIR = download_model(
-		'mask_rcnn_inception_resnet_v2_1024x1024_coco17_gpu-8', '20200711')
+	PATH_TO_MODEL_DIR = './model'
 	PATH_TO_CFG = PATH_TO_MODEL_DIR + "/pipeline.config"
 	PATH_TO_CKPT = PATH_TO_MODEL_DIR + "/checkpoint"
 

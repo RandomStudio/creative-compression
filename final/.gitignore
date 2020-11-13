@@ -1,4 +1,7 @@
 cache
-cache/*
-__pycache__/*
-playground/*
+__pycache__
+lib
+output
+bin
+static
+model
