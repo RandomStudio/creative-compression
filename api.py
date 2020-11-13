@@ -1,5 +1,5 @@
 from io import BytesIO
-from flask import Flask, jsonify, request, abort, send_file
+from flask import Flask, jsonify, request, render_template
 from PIL import Image
 import numpy as np
 from detect import generate_boxes_and_masks
@@ -10,6 +10,10 @@ import os
 
 api = Flask(__name__)
 detect_fn = load_model()
+
+@api.route("/")
+def index():
+    return render_template("index.html")
 
 @api.route("/upload", methods=["POST"])
 def post_file():

@@ -1,0 +1,13 @@
+<html>
+	<head></head>
+	<body>
+		<input id="upload" type="file" />
+		<script type="text/javascript">
+			function handleFiles() {
+				const fileList = this.files;
+				console.log(fileList);
+			}
+			document.querySelector('#upload').addEventListener("change", handleFiles, false);
+		</script>
+	</body>
+</html>
