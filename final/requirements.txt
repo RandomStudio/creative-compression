@@ -4,6 +4,7 @@ cryptography==3.2.1
 Cython==0.29.21
 docutils==0.16
 Flask==1.1.2
+gunicorn==20.0.4
 importlib_metadata==2.0.0
 ipaddr==2.2.0
 ipython==7.19.0
