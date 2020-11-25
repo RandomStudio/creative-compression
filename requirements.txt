@@ -17,7 +17,6 @@ tf_slim==1.1.0
 wincertstore==0.2
 zipp==3.4.0
 six==1.15.0
-absl==0.0
 apache_beam==2.25.0
 contextlib2==0.6.0.post1
 ipython==7.19.0
