@@ -19,7 +19,7 @@ zipp==3.4.0
 six==1.15.0
 apache_beam==2.25.0
 contextlib2==0.6.0.post1
-ipython==7.19.0
+ipython==7.16.1
 matplotlib==3.3.3
 nets==0.0.3
 numpy==1.19.4
