@@ -8,7 +8,7 @@ lxml==4.6.1
 mock==4.0.2
 mypy_extensions==0.4.3
 nets==0.0.3
-numpy==1.19.4
+numpy==1.19.0
 ordereddict==1.1
 Pillow==8.0.1
 protobuf==3.13.0
