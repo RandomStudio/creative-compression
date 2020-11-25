@@ -2,7 +2,7 @@ cache
 __pycache__
 lib
 output
+input_images/*
 bin
 static
 model
-input_images
