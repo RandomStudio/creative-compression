@@ -5,3 +5,4 @@ output
 bin
 static
 model
+input_images
