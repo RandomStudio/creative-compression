@@ -1,7 +1,8 @@
 import './App.css';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
-const API_URL = 'http://127.0.0.1:5000'
+const API_URL = process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:5000' : '';
+
 function App() {
   const canvasRef = useRef();
   const [image, setImage] = useState(null);

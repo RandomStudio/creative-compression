@@ -26,7 +26,7 @@ def after_request(response):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("ui/build/index.html")
 
 @app.route("/upload", methods=["POST"])
 def post_file():
