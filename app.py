@@ -1,6 +1,6 @@
 from io import BytesIO
 from flask import Flask, jsonify, send_file, request
-from PIL import Image
+from PIL import Image, ImageFile
 import numpy as np
 import json
 from image import compose_focus_effect
@@ -9,6 +9,7 @@ import os
 
 app = Flask(__name__)
 # detect_fn = load_model()
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 CACHE_FOLDER = './cache/'
 STATIC_FOLDER = 'static/uploads'
