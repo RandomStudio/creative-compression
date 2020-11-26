@@ -7,7 +7,7 @@ from image import compose_focus_effect
 import hashlib
 import os
 
-api = Flask(__name__)
+app = Flask(__name__)
 # detect_fn = load_model()
 
 CACHE_FOLDER = './cache/'
@@ -17,18 +17,18 @@ if not os.path.exists(CACHE_FOLDER):
 if not os.path.exists(STATIC_FOLDER):
 	os.makedirs(STATIC_FOLDER)
 
-@api.after_request # blueprint can also be app~~
+@app.after_request # blueprint can also be app~~
 def after_request(response):
     header = response.headers
     header['Access-Control-Allow-Origin'] = '*'
     header['Access-Control-Allow-Headers'] = '*'
     return response
 
-@api.route("/")
+@app.route("/")
 def index():
     return render_template("index.html")
 
-@api.route("/upload", methods=["POST"])
+@app.route("/upload", methods=["POST"])
 def post_file():
 	"""Upload a file."""
 
@@ -42,7 +42,7 @@ def post_file():
 		"filename": filename
 	})
 
-@api.route("/composition/<filename>", methods=["GET"])
+@app.route("/composition/<filename>", methods=["GET"])
 def get_composition(filename):
 	#(boxes, masks) = generate_boxes_and_masks(detect_fn, image_np, cache_location=CACHE_FOLDER + id, max_highlights=5)
 #
@@ -67,3 +67,6 @@ def get_composition(filename):
 
 	return send_file(img_io, mimetype='image/png')
 
+if __name__ == '__main__':
+    # Threaded option to enable multiple instances for multiple user access support
+    app.run(threaded=True, port=5000)
