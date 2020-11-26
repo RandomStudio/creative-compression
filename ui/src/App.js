@@ -32,7 +32,7 @@ function App() {
     }
     setIsLoading(true);
     const img = new Image();
-    img.src = savedShapes.length > 0 ? `${API_URL}/composition/${imageFilename}?boxes=${JSON.stringify(savedShapes)}&width=${canvasRef.current.width}` : `${API_URL}/static/${imageFilename}`;
+    img.src = savedShapes.length > 0 ? `${API_URL}/composition/${imageFilename}?boxes=${JSON.stringify(savedShapes)}&width=${canvasRef.current.width}` : `${API_URL}/static/uploads/${imageFilename}`;
     img.decoding = 'async';
     img.decode().then(() => {
       setImage(img);
