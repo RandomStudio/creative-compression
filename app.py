@@ -1,5 +1,5 @@
 from io import BytesIO
-from flask import Flask, jsonify, send_file, request, render_template
+from flask import Flask, jsonify, send_file, request
 from PIL import Image
 import numpy as np
 import json
@@ -11,7 +11,7 @@ app = Flask(__name__)
 # detect_fn = load_model()
 
 CACHE_FOLDER = './cache/'
-STATIC_FOLDER = 'static/'
+STATIC_FOLDER = 'static/uploads'
 if not os.path.exists(CACHE_FOLDER):
 	os.makedirs(CACHE_FOLDER)
 if not os.path.exists(STATIC_FOLDER):
@@ -26,7 +26,7 @@ def after_request(response):
 
 @app.route("/")
 def index():
-    return render_template("ui/build/index.html")
+    return app.send_static_file('index.html')
 
 @app.route("/upload", methods=["POST"])
 def post_file():

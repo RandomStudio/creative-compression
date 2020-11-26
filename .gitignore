@@ -4,5 +4,5 @@ lib
 output
 input_images/*
 bin
-static
+static/uploads
 model
