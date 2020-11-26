@@ -15,14 +15,20 @@ function App() {
 
   const onUpload = async event => {
     setIsLoading(true);
-    const response = await fetch(API_URL + '/upload', {
-      method: 'POST',
-      body: event.target.files[0]
-    });
-    const { filename } = await response.json();
-    console.log('has filename', filename)
+    setImageFilename(null);
+    setSavedShapes([]);
+    setShapeVisibility([]);
+    try {
+      const response = await fetch(API_URL + '/upload', {
+        method: 'POST',
+        body: event.target.files[0]
+      });
+      const { filename } = await response.json();
+      setImageFilename(filename);
+    } catch(error) {
+      console.error(error);
+    }
     setIsLoading(false);
-    setImageFilename(filename);
     event.preventDefault();
   };
 

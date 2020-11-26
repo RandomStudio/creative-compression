@@ -1,6 +1,6 @@
 from io import BytesIO
 from flask import Flask, jsonify, send_file, request
-from PIL import Image, ImageFile
+from PIL import Image
 import numpy as np
 import json
 from image import compose_focus_effect
@@ -9,10 +9,9 @@ import os
 
 app = Flask(__name__)
 # detect_fn = load_model()
-ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 CACHE_FOLDER = './cache/'
-STATIC_FOLDER = 'static/uploads'
+STATIC_FOLDER = 'static/uploads/'
 if not os.path.exists(CACHE_FOLDER):
 	os.makedirs(CACHE_FOLDER)
 if not os.path.exists(STATIC_FOLDER):
@@ -57,14 +56,11 @@ def get_composition(filename):
 	boxes = request.args.get('boxes')
 	clientWidth = request.args.get('width')
 	boxes = json.loads(boxes)
-	print('compose')
 	source, background, composition, frames = compose_focus_effect(image, boxes, clientWidth)
 	# composition.save(STATIC_FOLDER + id + '.jpg', 'JPEG', optimize=True, quality=80, progressive=True)
-	print('saving')
 	img_io = BytesIO()
 	composition.save(img_io, 'PNG')
 	img_io.seek(0)
-	print('done')
 
 	return send_file(img_io, mimetype='image/png')
 
