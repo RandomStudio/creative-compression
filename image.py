@@ -1,4 +1,4 @@
-from PIL import Image, ImageCms, ImageFilter
+from PIL import Image, ImageCms, ImageOps, ImageFilter
 import numpy as np
 import os
 
@@ -7,13 +7,12 @@ def get_image_np(image_name):
 	image = Image.open(image_path)
 	return np.array(image.convert('RGB'))
 
-def compose_focus_effect(image_np, boxes, masks):
-	source = Image.fromarray(np.uint8(image_np))
+def compose_focus_effect(source, boxes, clientWidth):
+	#source = Image.fromarray(np.uint8(image_np))
 	background = create_background_layer(source)
-
-	box_overlays = create_bounding_box_overlays(boxes, source)
-	mask_overlays = create_mask_overlays(masks, source)
-	composition, frames = compose_image(source, background, box_overlays, mask_overlays)
+	box_overlays = create_bounding_box_overlays(boxes, source, clientWidth)
+	# mask_overlays = create_mask_overlays(masks, source)
+	composition, frames = compose_image(source, background, box_overlays)
 	return source, background, composition, frames
 
 def create_background_layer(source):
@@ -23,12 +22,16 @@ def create_background_layer(source):
 	background = background.resize((width, height), Image.NEAREST)
 	return background
 
-def create_bounding_box_overlay(coords, source):
+def create_bounding_box_overlay(coords, source, scale):
 	STEPS = 5
-	source_width, source_height = source.size
-	ymin, xmin, ymax, xmax = coords
-	offsets = (xmin * source_width, ymin * source_height, xmax * source_width, ymax * source_height)
-
+	#ymin, xmin, ymax, xmax = coords
+	startX, startY, width, height = coords
+	endX = startX + width
+	endY = startY + height
+	xmin, xmax = sorted([startX, endX])
+	ymin, ymax = sorted([startY, endY])
+	#offsets = (xmin * source_width, ymin * source_height, xmax * source_width, ymax * source_height)
+	offsets = (xmin * scale, ymin * scale, xmax * scale, ymax * scale)
 	[left, top, right, bottom] = offsets
 	width = right - left
 	height = bottom - top
@@ -56,8 +59,7 @@ def create_bounding_box_overlay(coords, source):
 
 		# small_width = ((width - 16) / total_parts) * covered_parts
 		# small_height = ((height - 16) / total_parts) * covered_parts
-
-		destroyed_source = source.copy().resize((int(small_width), int(small_height)), resample=Image.BILINEAR).resize(source.size, Image.NEAREST)
+		destroyed_source = source.copy().resize((int(small_width), int(small_height)), resample=Image.BILINEAR).resize(source.size, Image.NEAREST) if step > 0 else source.copy()
 		bounding_box_overlay = destroyed_source.crop(adjustedOffsets)
 		#bounding_box_overlay = ImageOps.expand(bounding_box_overlay, border=5, fill="#000")
 		return (bounding_box_overlay, int(left), int(top))
@@ -66,8 +68,10 @@ def create_bounding_box_overlay(coords, source):
 
 	return layers
 
-def create_bounding_box_overlays(boxes_coords, source):
-	layerGroups = [create_bounding_box_overlay(coords, source) for coords in boxes_coords]
+def create_bounding_box_overlays(boxes_coords, source, clientWidth):
+	source_width, source_height = source.size
+	scale = source_width / int(clientWidth)
+	layerGroups = [create_bounding_box_overlay(coords, source, scale) for coords in boxes_coords]
 	allLayers = [val for tup in zip(*layerGroups) for val in tup]
 	allLayers.reverse()
 	return allLayers
@@ -93,18 +97,18 @@ def create_mask_overlays(mask_nps, source):
 
 	return masks
 
-def compose_image(source, background, box_overlays, mask_overlays):
+def compose_image(source, background, box_overlays):
 	frames = []
 	source = source.copy()
 	composition = background.copy()
 
 	for (image, left, top) in box_overlays:
 		composition.paste(image, (left, top))
-		frames.append(composition.copy())
+		#frames.append(composition.copy())
 
-	for i, mask in enumerate(mask_overlays):
-		composition = Image.composite(source, composition, mask)
-		frames.append(composition.copy())
+	#for i, mask in enumerate(mask_overlays):
+	#	composition = Image.composite(source, composition, mask)
+	#	frames.append(composition.copy())
 
 	return [composition, frames]
 

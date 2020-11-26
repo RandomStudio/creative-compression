@@ -1,0 +1,30 @@
+.page {
+  display: grid;
+  grid-template-rows: 50px 1fr;
+  height: 100vh;
+  width: calc(100vw - 40px);
+  margin: 12px 20px;
+}
+
+.loader {
+  margin: 0 auto;
+  width: 40px;
+  height: 40px;
+  background-color: black;
+  animation: spin 1s infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.canvas {
+  grid-row: 2 / 3;
+  grid-column: 1 / 2;
+  width: 100%;
+}
