@@ -100,9 +100,12 @@
   border: none;
 }
 
-
+.finder,
 .downloader,
 .uploader {
+  outline: none;
+  border: none;
+  font-size: 1em;
   background-color: #eeeeee;
   text-transform: uppercase;
   text-align: center;
@@ -123,6 +126,14 @@
   visibility: hidden;
   width: 0;
   height: 0;
+}
+
+.finder {
+  background-color: red;
+  color: white;
+  cursor: not-allowed;
+  text-decoration: none;
+  margin-top: 8px;
 }
 
 .downloader {

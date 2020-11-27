@@ -29,6 +29,7 @@ function App() {
       <div className="sidebar">
         <Sidebar shapeVisibilities={shapeVisibilities} setShapeVisibilities={setShapeVisibilities} savedShapes={savedShapes} setSavedShapes={setSavedShapes} /> 
         <Uploader API_URL={API_URL} resetState={resetState} setImageFilename={setImageFilename} setIsLoading={setIsLoading} />
+        <button className="finder" disabled>Find objects in image</button>
         <a href={`${API_URL}/composition/${imageFilename}?boxes=${JSON.stringify(savedShapes)}&width=${canvasRef?.current?.width}`} target="_blank" className="downloader">Save high quality</a>
       </div>
     </div>
