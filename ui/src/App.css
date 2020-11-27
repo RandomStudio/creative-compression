@@ -1,9 +1,13 @@
+* {
+  box-sizing: border-box;
+}
 .page {
   display: grid;
-  grid-template-rows: 50px 1fr;
+  grid-template-areas: "main sidebar";
+  grid-template-columns: 3fr 1fr;
   height: 100vh;
-  width: calc(100vw - 40px);
-  margin: 12px 20px;
+  width: 100vw;
+  padding: 12px 20px;
 }
 
 .loader {
@@ -23,8 +27,17 @@
   }
 }
 
+.main {
+  display:flex;
+  justify-content: center;
+  place-items: center;
+  grid-area: main;
+}
+
 .canvas {
-  grid-row: 2 / 3;
-  grid-column: 1 / 2;
   width: 100%;
+}
+
+.sidebar {
+  grid-area: sidebar;
 }
