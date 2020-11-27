@@ -7,28 +7,49 @@
   grid-template-columns: 3fr 1fr;
   height: 100vh;
   width: 100vw;
-  padding: 12px 20px;
+  padding: 24px 20px;
 }
 
 .loader {
-  margin: 0 auto;
-  width: 40px;
-  height: 40px;
-  background-color: black;
-  animation: spin 1s infinite;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: rgba(255,255,255,0.3);
+  height: 100%;
 }
 
+.loader::before,
+.loader::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 20px;
+  height: 20px;
+  width: 20px;
+  animation: spin 1s infinite;
+  background-color: black;
+  transform-origin: top left;
+  content: '';
+}
+
+.loader::after {
+  transform-origin: bottom right;
+}
 @keyframes spin {
   0% {
-    transform: rotate(0deg);
+    transform: translate(-50%, -50%) rotate(0deg);
   }
   100% {
-    transform: rotate(360deg);
+    transform: translate(-50%, -50%) rotate(360deg);
   }
 }
 
 .main {
   display:flex;
+  position: relative;
   justify-content: center;
   place-items: center;
   grid-area: main;
@@ -36,8 +57,77 @@
 
 .canvas {
   width: 100%;
+  height: auto;
+}
+
+.canvas.is-vertical {
+  width: auto;
+  height: 100%;
 }
 
 .sidebar {
+  display:flex;
+  flex-direction: column;
   grid-area: sidebar;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  border-bottom: 1px solid #eeeeee;
+  padding: 12px 20px;
+}
+
+.row-title {
+  margin: 0 0 4px;
+  font-weight: bold;
+}
+
+.row button {
+  outline: none;
+  border: none;
+  text-transform: uppercase;
+  font-weight: bold;
+  appearance: none;
+  background-color: red;
+  color: white;
+  margin-left: auto;
+}
+
+.row.options {
+  margin-top: auto;
+  border: none;
+}
+
+
+.downloader,
+.uploader {
+  background-color: #eeeeee;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 8px;
+  margin-left: 20px;
+}
+
+.downloader:focus,
+.uploader label:active {
+  opacity: 0.1;
+}
+
+.uploader label {
+  width: 100%;
+}
+
+.uploader input {
+  visibility: hidden;
+  width: 0;
+  height: 0;
+}
+
+.downloader {
+  background-color: black;
+  color: white;
+  text-decoration: none;
+  margin-top: 8px;
 }

@@ -36,7 +36,17 @@ def post_file():
 	id = hashlib.md5(image.tobytes()).hexdigest()
 
 	filename = id + '.png'
+
 	image.save(STATIC_FOLDER + filename, 'PNG')
+
+	width, height = image.size
+
+	if (width > height):
+		ratio = width / 640
+		image.resize((640, int(height / ratio))).save(STATIC_FOLDER + 'preview_' + filename, 'PNG')
+	else:
+		ratio = height / 640
+		image.resize((int(width / ratio), 640)).save(STATIC_FOLDER + 'preview_' + filename, 'PNG')
 
 	return jsonify({
 		"filename": filename

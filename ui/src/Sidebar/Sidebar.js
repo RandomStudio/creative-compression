@@ -11,16 +11,25 @@ const Sidebar = ({ savedShapes, shapeVisibilities, setSavedShapes, setShapeVisib
     setShapeVisibilities(shapeVisibilities.map((visibility, i) => index === i ? null : visibility).filter(state => state !== null));
   }
 
+  const areLayersVisible = shapeVisibilities.some(visible => visible !== false);
+
+  const toggleAllBorders = () => {
+    setShapeVisibilities(shapeVisibilities.map(entry => !areLayersVisible));
+  }
+
+
   return (
     <>
       {shapeVisibilities.map((isShapeVisible, index) => (
         <div className="row">
-          <p>Box {index}</p>
-      Enabled?
-          <input type="checkbox" checked={isShapeVisible} onChange={() => toggleShapeVisibility(index)} />
+          <p className="row-title">Box {index}</p>
           <button onClick={() => deleteShape(index)}>Delete</button>
         </div>
       ))}
+      <div className="row options">
+        <input type="checkbox" checked={areLayersVisible} onChange={toggleAllBorders} />
+        Toggle guides
+      </div>
     </>
   );
 }

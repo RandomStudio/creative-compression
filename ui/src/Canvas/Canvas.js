@@ -2,9 +2,10 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 const API_URL = process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:5000' : '';
 
-const Canvas = ({ imageFilename, savedShapes, shapeVisibilities, setIsLoading, setSavedShapes, setShapeVisibilities }) => {
+const Canvas = ({ canvasRef, imageFilename, savedShapes, shapeVisibilities, setIsLoading, setSavedShapes, setShapeVisibilities }) => {
   const currentShapeRef = useRef([0, 0, 0, 0]);
 
+  const [isVerticalRatio, setIsVerticalRatio] = useState(false);
   const [image, setImage] = useState(null);
   useEffect(() => {
     if (!imageFilename) {
@@ -12,25 +13,32 @@ const Canvas = ({ imageFilename, savedShapes, shapeVisibilities, setIsLoading, s
     }
     setIsLoading(true);
     const img = new Image();
-    img.src = savedShapes.length > 0 ? `${API_URL}/composition/${imageFilename}?boxes=${JSON.stringify(savedShapes)}&width=${canvasRef.current.width}` : `${API_URL}/static/uploads/${imageFilename}`;
+    img.src = savedShapes.length > 0 ? `${API_URL}/composition/preview_${imageFilename}?boxes=${JSON.stringify(savedShapes)}&width=${canvasRef.current.width}` : `${API_URL}/static/uploads/preview_${imageFilename}`;
     img.decoding = 'async';
     img.decode().then(() => {
-      setImage(img);
+      setIsVerticalRatio(img.width < img.height);
       setIsLoading(false);
+      setImage(img);
     });
-  }, [imageFilename, savedShapes, setIsLoading]);
+  }, [canvasRef, imageFilename, savedShapes, setIsLoading]);
 
 
   const [drawRectContext, setDrawRectContext] = useState(null);
-  const canvasRef = useRef();
   const refreshImage = useCallback(async (context) => {
     if (!image) {
       return;
     }
-    canvasRef.current.width = canvasRef.current.clientWidth;
-    canvasRef.current.height = (canvasRef.current.clientWidth / image.width) * image.height
-    context.drawImage(image, 0, 0, canvasRef.current.clientWidth, canvasRef.current.clientHeight);
-  }, [image]);
+    if (image.width > image.height) {
+      setIsVerticalRatio(false);
+      canvasRef.current.width = canvasRef.current.clientWidth;
+      canvasRef.current.height = (canvasRef.current.clientWidth / image.width) * image.height
+    } else {
+      setIsVerticalRatio(true);
+      canvasRef.current.height = canvasRef.current.clientHeight;
+      canvasRef.current.width = (canvasRef.current.clientHeight / image.height) * image.width
+    }
+    context.drawImage(image, 0, 0, canvasRef.current.width, canvasRef.current.height);
+  }, [canvasRef, image]);
 
   const refreshShapes = useCallback((context) => {
     savedShapes.map(([startX, startY, width, height], i) => {
@@ -52,7 +60,7 @@ const Canvas = ({ imageFilename, savedShapes, shapeVisibilities, setIsLoading, s
     context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
     refreshImage(context);
     refreshShapes(context);
-  }, [refreshImage, refreshShapes]);
+  }, [canvasRef, refreshImage, refreshShapes]);
 
   useEffect(() => {
     redrawCanvas();
@@ -108,7 +116,14 @@ const Canvas = ({ imageFilename, savedShapes, shapeVisibilities, setIsLoading, s
   }
 
   return (
-    <canvas className="canvas" onMouseDown={onMouseDown} onMouseUp={onMouseUp} onMouseLeave={onMouseLeave} onMouseMove={onMouseMove} ref={canvasRef} />
+    <canvas
+      className={`canvas ${isVerticalRatio ? 'is-vertical' : ''}`}
+      onMouseDown={onMouseDown}
+      onMouseUp={onMouseUp}
+      onMouseLeave={onMouseLeave}
+      onMouseMove={onMouseMove}
+      ref={canvasRef}
+    />
   );
 }
 

@@ -70,7 +70,7 @@ def create_bounding_box_overlay(coords, source, scale):
 
 def create_bounding_box_overlays(boxes_coords, source, clientWidth):
 	source_width, source_height = source.size
-	scale = source_width / int(clientWidth)
+	scale = source_width / int(clientWidth) if clientWidth else 1
 	layerGroups = [create_bounding_box_overlay(coords, source, scale) for coords in boxes_coords]
 	allLayers = [val for tup in zip(*layerGroups) for val in tup]
 	allLayers.reverse()

@@ -1,8 +1,6 @@
 import React from 'react';
 
-const API_URL = process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:5000' : '';
-
-const Uploader = ({ resetState, setImageFilename, setIsLoading }) => {
+const Uploader = ({ API_URL, resetState, setImageFilename, setIsLoading }) => {
   const onUpload = async event => {
     setIsLoading(true);
     resetState();
@@ -21,7 +19,10 @@ const Uploader = ({ resetState, setImageFilename, setIsLoading }) => {
   };
 
   return (
+    <div className="uploader">
+      <label for="upload">Load image</label>
       <input id="upload" onChange={onUpload} type="file" />
+    </div>
   );
 }
 
