@@ -20,7 +20,7 @@ const Uploader = ({ API_URL, resetState, setImageFilename, setIsLoading }) => {
 
   return (
     <div className="uploader">
-      <label for="upload">Load image</label>
+      <label htmlFor="upload">Load image</label>
       <input id="upload" onChange={onUpload} type="file" />
     </div>
   );

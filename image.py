@@ -33,8 +33,8 @@ def create_bounding_box_overlay(coords, source, scale):
 	#offsets = (xmin * source_width, ymin * source_height, xmax * source_width, ymax * source_height)
 	offsets = (xmin * scale, ymin * scale, xmax * scale, ymax * scale)
 	[left, top, right, bottom] = offsets
-	width = right - left
-	height = bottom - top
+	width = max(right - left, 1)
+	height = max(bottom - top, 1)
 
 	def adjustOffset(offset, step, index):
 		dimension = width if index % 2 == 0 else height
@@ -53,13 +53,15 @@ def create_bounding_box_overlay(coords, source, scale):
 
 		small_width = (width**(1/(step + 2))) * width_bit
 		small_height = (height**(1/(step + 2))) * height_bit
-
+		small_width = int(max(small_width, 1))
+		small_height = int(max(small_height, 1))
+	 
 		# total_parts = sum(range(0, STEPS))
 		# covered_parts = sum(range(0, STEPS - step)) + 1
 
 		# small_width = ((width - 16) / total_parts) * covered_parts
 		# small_height = ((height - 16) / total_parts) * covered_parts
-		destroyed_source = source.copy().resize((int(small_width), int(small_height)), resample=Image.BILINEAR).resize(source.size, Image.NEAREST) if step > 0 else source.copy()
+		destroyed_source = source.copy().resize((small_width, small_height), resample=Image.BILINEAR).resize(source.size, Image.NEAREST) if step > 0 else source.copy()
 		bounding_box_overlay = destroyed_source.crop(adjustedOffsets)
 		#bounding_box_overlay = ImageOps.expand(bounding_box_overlay, border=5, fill="#000")
 		return (bounding_box_overlay, int(left), int(top))
