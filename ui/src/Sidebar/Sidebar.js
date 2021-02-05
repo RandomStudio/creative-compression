@@ -11,12 +11,11 @@ const Sidebar = ({
   steps
 }) => {
   const updateSetting = (value, index, func) => {
-    console.log('changing', index, value)
     if (!value) {
       return;
     }
     func(v => {
-      v[index] = Math.max(0, parseInt(value));
+      v[index] = Math.max(1, parseInt(value));
       return [...v];
     })
   }
@@ -32,7 +31,7 @@ const Sidebar = ({
             <input type="number" value={steps[index]} onChange={e => updateSetting(e.target.value, index, setSteps)} />
           </div>
           <div className="input-row">
-            Step width
+            Step width divisor
             <input type="number" value={distances[index]} onChange={e => updateSetting(e.target.value, index, setDistances)} />
           </div>
           <button onClick={() => deleteShape(index)}>Delete</button>
