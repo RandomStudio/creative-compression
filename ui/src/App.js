@@ -12,25 +12,61 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
 
   const [savedShapes, setSavedShapes] = useState([]);
-  const [shapeVisibilities, setShapeVisibilities] = useState([]);
+  const [hasVisibleBorders, setHasVisibleBorders] = useState(false);
+
+  const [steps, setSteps] = useState([]);
+  const [distances, setDistances] = useState([]);
 
   const resetState = async event => {
     setImageFilename(null);
     setSavedShapes([]);
-    setShapeVisibilities([]);
+    setSteps([]);
+    setDistances([]);
   };
+
+  const addShape = shape => {
+    setSavedShapes([...savedShapes, shape]);
+    setDistances([...distances, 5]);
+    setSteps([...steps, 5]);
+  }
+
+  const removeFromArray = (array, index) => array.map((value, i) => index === i ? false : value).filter(exists => exists)
+  const deleteShape = index => {
+    setDistances(removeFromArray(distances, index));
+    setSteps(removeFromArray(steps, index));
+    setSavedShapes(removeFromArray(savedShapes, index));
+  }
+
+  const imageUrl = (isPreview = true) => savedShapes.length > 0 
+    ? `${API_URL}/composition/${isPreview ? 'preview_' : ''}${imageFilename}?boxes=${JSON.stringify(savedShapes)}&width=${canvasRef.current.width}&showBorders=${hasVisibleBorders}&steps=${JSON.stringify(steps)}&distances=${JSON.stringify(distances)}`
+    : `${API_URL}/static/uploads/preview_${imageFilename}`;
 
   return (
     <div className="page">
       <div className="main">
-        <Canvas canvasRef={canvasRef} imageFilename={imageFilename} savedShapes={savedShapes} shapeVisibilities={shapeVisibilities} setIsLoading={setIsLoading} setSavedShapes={setSavedShapes} setShapeVisibilities={setShapeVisibilities} />
+        <Canvas
+          addShape={addShape}
+          canvasRef={canvasRef}
+          imageUrl={imageFilename ? imageUrl() : null}
+          savedShapes={savedShapes}
+          setIsLoading={setIsLoading}
+        />
         {isLoading && <div className="loader" />}
       </div>
       <div className="sidebar">
-        <Sidebar shapeVisibilities={shapeVisibilities} setShapeVisibilities={setShapeVisibilities} savedShapes={savedShapes} setSavedShapes={setSavedShapes} /> 
+        <Sidebar
+          deleteShape={deleteShape}
+          distances={distances}
+          hasVisibleBorders={hasVisibleBorders}
+          savedShapes={savedShapes}
+          setDistances={setDistances}
+          setHasVisibleBorders={setHasVisibleBorders}
+          setSteps={setSteps}
+          steps={steps}
+        /> 
         <Uploader API_URL={API_URL} resetState={resetState} setImageFilename={setImageFilename} setIsLoading={setIsLoading} />
         <button className="finder" disabled>Find objects in image</button>
-        <a href={`${API_URL}/composition/${imageFilename}?boxes=${JSON.stringify(savedShapes)}&width=${canvasRef?.current?.width}`} target="_blank" className="downloader">Save high quality</a>
+        <a href={imageUrl(false)} target="_blank" className="downloader">Save high quality</a>
       </div>
     </div>
   );

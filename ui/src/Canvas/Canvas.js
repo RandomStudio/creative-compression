@@ -1,26 +1,24 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
-const API_URL = process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:5000' : '';
-
-const Canvas = ({ canvasRef, imageFilename, savedShapes, shapeVisibilities, setIsLoading, setSavedShapes, setShapeVisibilities }) => {
+const Canvas = ({ addShape, canvasRef, imageUrl, savedShapes, setIsLoading }) => {
   const currentShapeRef = useRef([0, 0, 0, 0]);
 
   const [isVerticalRatio, setIsVerticalRatio] = useState(false);
   const [image, setImage] = useState(null);
   useEffect(() => {
-    if (!imageFilename) {
+    if (!imageUrl) {
       return;
     }
     setIsLoading(true);
     const img = new Image();
-    img.src = savedShapes.length > 0 ? `${API_URL}/composition/preview_${imageFilename}?boxes=${JSON.stringify(savedShapes)}&width=${canvasRef.current.width}` : `${API_URL}/static/uploads/preview_${imageFilename}`;
+    img.src = imageUrl;
     img.decoding = 'async';
     img.decode().then(() => {
       setIsVerticalRatio(img.width < img.height);
       setIsLoading(false);
       setImage(img);
     });
-  }, [canvasRef, imageFilename, savedShapes, setIsLoading]);
+  }, [canvasRef, imageUrl, setIsLoading]);
 
 
   const [drawRectContext, setDrawRectContext] = useState(null);
@@ -42,14 +40,11 @@ const Canvas = ({ canvasRef, imageFilename, savedShapes, shapeVisibilities, setI
 
   const refreshShapes = useCallback((context) => {
     savedShapes.map(([startX, startY, width, height], i) => {
-      if (!shapeVisibilities[i]) {
-        return false;
-      }
-      context.strokeStyle = 'blue'
+      context.strokeStyle = 'transparent'
       context.strokeRect(startX, startY, width, height);
       return true;
     })
-  }, [savedShapes, shapeVisibilities]);
+  }, [savedShapes]);
 
 
   const redrawCanvas = useCallback(async (sharedContext) => {
@@ -64,7 +59,7 @@ const Canvas = ({ canvasRef, imageFilename, savedShapes, shapeVisibilities, setI
 
   useEffect(() => {
     redrawCanvas();
-  }, [redrawCanvas, savedShapes, shapeVisibilities]);
+  }, [redrawCanvas, imageUrl]);
 
   const getCanvasCoords = function (clientX, clientY) {
     var rect = canvasRef.current.getBoundingClientRect();
@@ -87,8 +82,7 @@ const Canvas = ({ canvasRef, imageFilename, savedShapes, shapeVisibilities, setI
     if (!currentShapeRef.current[2] === 0 || currentShapeRef.current[3] === 0) {
       return;
     }
-    setSavedShapes(state => [...state, currentShapeRef.current]);
-    setShapeVisibilities(state => [...state, true]);
+    addShape(currentShapeRef.current);
   }
 
   const onMouseMove = event => {

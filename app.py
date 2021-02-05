@@ -6,6 +6,7 @@ import json
 from image import compose_focus_effect
 import hashlib
 import os
+from urllib.parse import urlsplit, parse_qs
 
 app = Flask(__name__)
 # detect_fn = load_model()
@@ -22,6 +23,18 @@ def after_request(response):
     header = response.headers
     header['Access-Control-Allow-Origin'] = '*'
     header['Access-Control-Allow-Headers'] = '*'
+    return response
+
+@app.errorhandler(Exception)
+def handle_error(e):
+    response = e.get_response()
+    # replace the body with JSON
+    response.data = json.dumps({
+        "code": e.code,
+        "name": e.name,
+        "description": e.description,
+    })
+    response.content_type = "application/json"
     return response
 
 @app.route("/")
@@ -62,11 +75,20 @@ def get_composition(filename):
 	#	})
 	image = Image.open(STATIC_FOLDER + filename)
 	#image_np = np.array(image.convert('RGB'))
-
-	boxes = request.args.get('boxes')
-	clientWidth = request.args.get('width')
-	boxes = json.loads(boxes)
-	source, background, composition, frames = compose_focus_effect(image, boxes, clientWidth)
+	query = urlsplit(request.url).query
+	params = {k: v[0] for k, v in parse_qs(query).items()}
+	settings = {
+		"steps": 5,
+		"distances": 5,
+		"showBorders": False,
+		"width": None,
+		"boxes": [],
+	}
+	settings.update(params)
+	settings["boxes"] = json.loads(settings["boxes"])
+	settings["steps"] = json.loads(settings["steps"])
+	settings["distances"] = json.loads(settings["distances"])
+	source, background, composition, frames = compose_focus_effect(image, settings)
 	# composition.save(STATIC_FOLDER + id + '.jpg', 'JPEG', optimize=True, quality=80, progressive=True)
 	img_io = BytesIO()
 	composition.save(img_io, 'PNG')

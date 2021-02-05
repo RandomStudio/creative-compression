@@ -1,34 +1,47 @@
 import React from 'react';
 
-const Sidebar = ({ savedShapes, shapeVisibilities, setSavedShapes, setShapeVisibilities }) => {
-  const toggleShapeVisibility = index => {
-    const updatedState = shapeVisibilities.map((state, i) => i === index ? !state : state)
-    setShapeVisibilities(updatedState);
+const Sidebar = ({
+  deleteShape,
+  distances,
+  hasVisibleBorders,
+  savedShapes,
+  setDistances,
+  setHasVisibleBorders,
+  setSteps,
+  steps
+}) => {
+  const updateSetting = (value, index, func) => {
+    console.log('changing', index, value)
+    if (!value) {
+      return;
+    }
+    func(v => {
+      v[index] = Math.max(0, parseInt(value));
+      return [...v];
+    })
   }
-
-  const deleteShape = index => {
-    setSavedShapes(savedShapes.map((shape, i) => index === i ? false : shape).filter(exists => exists));
-    setShapeVisibilities(shapeVisibilities.map((visibility, i) => index === i ? null : visibility).filter(state => state !== null));
-  }
-
-  const areLayersVisible = shapeVisibilities.some(visible => visible !== false);
-
-  const toggleAllBorders = () => {
-    setShapeVisibilities(shapeVisibilities.map(entry => !areLayersVisible));
-  }
-
 
   return (
     <>
-      {shapeVisibilities.map((isShapeVisible, index) => (
-        <div className="row">
+    <div className="boxes">
+      {savedShapes.map((shape, index) => (
+        <div className="row" key={`${index}_${shape.join('-')}`}>
           <p className="row-title">Box {index}</p>
+          <div className="input-row">
+            Number of steps
+            <input type="number" value={steps[index]} onChange={e => updateSetting(e.target.value, index, setSteps)} />
+          </div>
+          <div className="input-row">
+            Step width
+            <input type="number" value={distances[index]} onChange={e => updateSetting(e.target.value, index, setDistances)} />
+          </div>
           <button onClick={() => deleteShape(index)}>Delete</button>
         </div>
       ))}
+      </div>
       <div className="row options">
-        <input type="checkbox" checked={areLayersVisible} onChange={toggleAllBorders} />
-        Toggle guides
+        <input type="checkbox" checked={hasVisibleBorders} onChange={() => setHasVisibleBorders(!hasVisibleBorders)} />
+        Display debug borders
       </div>
     </>
   );

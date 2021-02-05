@@ -58,11 +58,13 @@
 .canvas {
   width: 100%;
   height: auto;
+  max-width: 100%;
 }
 
 .canvas.is-vertical {
   width: auto;
   height: 100%;
+  max-height: 100%;
 }
 
 .sidebar {
@@ -74,9 +76,10 @@
 .row {
   display: flex;
   flex-wrap: wrap;
-  flex-direction: row;
+  flex-direction: column;
   border-bottom: 1px solid #eeeeee;
   padding: 12px 20px;
+  position: relative;
 }
 
 .row-title {
@@ -85,6 +88,9 @@
 }
 
 .row button {
+  position: absolute;
+  right: 20px;
+  bottom: 32px;
   outline: none;
   border: none;
   text-transform: uppercase;
@@ -96,8 +102,23 @@
 }
 
 .row.options {
-  margin-top: auto;
   border: none;
+}
+
+.row.options:nth-child(2) {
+  margin-top: auto;
+}
+
+.input-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  padding-right: 80px;
+}
+
+.input-row input {
+  width: 48px;
+  margin-left: auto;
 }
 
 .finder,
