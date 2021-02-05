@@ -65,7 +65,7 @@ function App() {
           steps={steps}
         /> 
         <Uploader API_URL={API_URL} resetState={resetState} setImageFilename={setImageFilename} setIsLoading={setIsLoading} />
-        <a href={imageUrl(false)} target="_blank" className="downloader">Save high quality</a>
+        <a href={imageUrl(false)} target="_blank" className="downloader">Export high quality</a>
       </div>
     </div>
   );
