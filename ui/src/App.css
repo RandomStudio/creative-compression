@@ -55,10 +55,19 @@
   grid-area: main;
 }
 
+.main.is-empty::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  content: 'Upload an image to start';
+}
+
 .canvas {
   width: 100%;
   height: auto;
   max-width: 100%;
+  background-color: #eeeeee;
 }
 
 .canvas.is-vertical {
@@ -71,6 +80,7 @@
   display:flex;
   flex-direction: column;
   grid-area: sidebar;
+  padding: 0 20px;
 }
 
 .row {
@@ -102,11 +112,19 @@
 }
 
 .row.options {
-  border: none;
+  border-top: 1px solid #eee;
+  display: flex;
+  font-size: 0.7em;
+  justify-content: space-between;
+  flex-direction: row-reverse;
 }
 
 .row.options:nth-child(2) {
   margin-top: auto;
+}
+.row.options input {
+  margin: 0;
+  padding: 0;
 }
 
 .input-row {
@@ -121,22 +139,37 @@
   margin-left: auto;
 }
 
-.finder,
 .downloader,
 .uploader {
   outline: none;
   border: none;
   font-size: 1em;
   background-color: #eeeeee;
+  color: white;
+  font-weight: 500;
+  border-radius: 4px;
   text-transform: uppercase;
   text-align: center;
   padding: 8px;
-  margin-left: 20px;
+  position: relative;
+  overflow: hidden;
 }
 
-.downloader:focus,
+.uploader label {
+  background-color: #0078e7;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  place-items: center;
+  bottom: 0;
+}
+
 .uploader label:active {
-  opacity: 0.1;
+  background-color: #054581;
+  color: white;
 }
 
 .uploader label {
@@ -149,17 +182,11 @@
   height: 0;
 }
 
-.finder {
-  background-color: red;
-  color: white;
-  cursor: not-allowed;
+.downloader {
+  background-color: rgb(28, 184, 65);
   text-decoration: none;
   margin-top: 8px;
 }
-
-.downloader {
-  background-color: black;
-  color: white;
-  text-decoration: none;
-  margin-top: 8px;
+.downloader:focus {
+  background-color: rgb(24, 107, 43);
 }

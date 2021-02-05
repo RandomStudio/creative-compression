@@ -43,7 +43,7 @@ function App() {
 
   return (
     <div className="page">
-      <div className="main">
+      <div className={`main ${!imageFilename ? 'is-empty' : ''}`}>
         <Canvas
           addShape={addShape}
           canvasRef={canvasRef}
@@ -65,7 +65,6 @@ function App() {
           steps={steps}
         /> 
         <Uploader API_URL={API_URL} resetState={resetState} setImageFilename={setImageFilename} setIsLoading={setIsLoading} />
-        <button className="finder" disabled>Find objects in image</button>
         <a href={imageUrl(false)} target="_blank" className="downloader">Save high quality</a>
       </div>
     </div>

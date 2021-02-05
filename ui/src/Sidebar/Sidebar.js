@@ -40,7 +40,7 @@ const Sidebar = ({
       </div>
       <div className="row options">
         <input type="checkbox" checked={hasVisibleBorders} onChange={() => setHasVisibleBorders(!hasVisibleBorders)} />
-        Display debug borders
+        Display borders
       </div>
     </>
   );

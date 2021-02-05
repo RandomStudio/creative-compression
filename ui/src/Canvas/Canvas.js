@@ -112,10 +112,10 @@ const Canvas = ({ addShape, canvasRef, imageUrl, savedShapes, setIsLoading }) =>
   return (
     <canvas
       className={`canvas ${isVerticalRatio ? 'is-vertical' : ''}`}
-      onMouseDown={onMouseDown}
-      onMouseUp={onMouseUp}
-      onMouseLeave={onMouseLeave}
-      onMouseMove={onMouseMove}
+      onMouseDown={imageUrl ? onMouseDown : null}
+      onMouseUp={imageUrl ? onMouseUp : null}
+      onMouseLeave={imageUrl ? onMouseLeave : null}
+      onMouseMove={imageUrl ? onMouseMove : null}
       ref={canvasRef}
     />
   );
