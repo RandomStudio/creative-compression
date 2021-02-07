@@ -8,6 +8,8 @@ const Sidebar = ({
   setDistances,
   setHasVisibleBorders,
   setSteps,
+  setSpeeds,
+  speeds,
   steps
 }) => {
   const updateSetting = (value, index, func) => {
@@ -27,8 +29,8 @@ const Sidebar = ({
         <div className="row" key={`${index}_${shape.join('-')}`}>
           <p className="row-title">Box {index}</p>
           <div className="input-row">
-            Number of steps
-            <input type="number" value={steps[index]} onChange={e => updateSetting(e.target.value, index, setSteps)} />
+            Degradation speed
+            <input type="number" value={speeds[index]} onChange={e => updateSetting(e.target.value, index, setSpeeds)} />
           </div>
           <div className="input-row">
             Step width divisor
@@ -41,6 +43,10 @@ const Sidebar = ({
       <div className="row options">
         <input type="checkbox" checked={hasVisibleBorders} onChange={() => setHasVisibleBorders(!hasVisibleBorders)} />
         Display borders
+      </div>
+      <div className="row options">
+        <input type="number" value={steps} onChange={e => setSteps(e.target.value)} />
+        Number of steps
       </div>
     </>
   );

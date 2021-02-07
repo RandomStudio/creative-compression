@@ -78,15 +78,16 @@ def get_composition(filename):
 	query = urlsplit(request.url).query
 	params = {k: v[0] for k, v in parse_qs(query).items()}
 	settings = {
+		"speeds": [1],
 		"steps": 5,
-		"distances": 5,
+		"distances": [5],
 		"showBorders": False,
 		"width": None,
 		"boxes": [],
 	}
 	settings.update(params)
 	settings["boxes"] = json.loads(settings["boxes"])
-	settings["steps"] = json.loads(settings["steps"])
+	settings["speeds"] = json.loads(settings["speeds"])
 	settings["distances"] = json.loads(settings["distances"])
 	source, background, composition, frames = compose_focus_effect(image, settings)
 	# composition.save(STATIC_FOLDER + id + '.jpg', 'JPEG', optimize=True, quality=80, progressive=True)

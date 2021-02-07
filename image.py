@@ -23,7 +23,8 @@ def create_background_layer(source):
 	return background
 
 def create_bounding_box_overlay(coords, source, settings, index):
-	steps = int(settings["steps"][index])
+	steps = int(settings["steps"])
+	speed = int(settings["speeds"][index])
 	distance = int(settings["distances"][index])
 	showBorders = settings["showBorders"] == 'true'
 
@@ -56,14 +57,17 @@ def create_bounding_box_overlay(coords, source, settings, index):
 
 		square_root_width = width**(1/2)
 		square_root_height = height**(1/2)
-		width_bit = (width / 2) / square_root_width
-		height_bit = (height / 2) / square_root_height
+		divisor = speed * (step + 1)
+		width_bit = (width / divisor) / square_root_width
+		height_bit = (height / divisor) / square_root_height
+		print(width_bit, height_bit)
 
 		small_width = (width**(1/(step + 2))) * width_bit
 		small_height = (height**(1/(step + 2))) * height_bit
 		small_width = int(max(small_width, 1))
 		small_height = int(max(small_height, 1))
-	 
+
+		print(small_height, small_width)
 		# total_parts = sum(range(0, STEPS))
 		# covered_parts = sum(range(0, STEPS - step)) + 1
 

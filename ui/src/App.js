@@ -14,31 +14,34 @@ function App() {
   const [savedShapes, setSavedShapes] = useState([]);
   const [hasVisibleBorders, setHasVisibleBorders] = useState(false);
 
-  const [steps, setSteps] = useState([]);
+  const [speeds, setSpeeds] = useState([]);
+  const [steps, setSteps] = useState(1);
   const [distances, setDistances] = useState([]);
 
   const resetState = async event => {
     setImageFilename(null);
     setSavedShapes([]);
-    setSteps([]);
+    setSteps(1);
+    setSpeeds([]);
     setDistances([]);
   };
 
   const addShape = shape => {
     setSavedShapes([...savedShapes, shape]);
     setDistances([...distances, 5]);
-    setSteps([...steps, 5]);
+    setSteps(5);
+    setSpeeds([...speeds, 1]);
   }
 
   const removeFromArray = (array, index) => array.map((value, i) => index === i ? false : value).filter(exists => exists)
   const deleteShape = index => {
     setDistances(removeFromArray(distances, index));
-    setSteps(removeFromArray(steps, index));
+    setSpeeds(removeFromArray(speeds, index));
     setSavedShapes(removeFromArray(savedShapes, index));
   }
 
   const imageUrl = (isPreview = true) => savedShapes.length > 0 
-    ? `${API_URL}/composition/${isPreview ? 'preview_' : ''}${imageFilename}?boxes=${JSON.stringify(savedShapes)}&width=${canvasRef.current.width}&showBorders=${hasVisibleBorders}&steps=${JSON.stringify(steps)}&distances=${JSON.stringify(distances)}`
+    ? `${API_URL}/composition/${isPreview ? 'preview_' : ''}${imageFilename}?boxes=${JSON.stringify(savedShapes)}&width=${canvasRef.current.width}&showBorders=${hasVisibleBorders}&speeds=${JSON.stringify(speeds)}&steps=${steps}&distances=${JSON.stringify(distances)}`
     : `${API_URL}/static/uploads/preview_${imageFilename}`;
 
   return (
@@ -62,7 +65,9 @@ function App() {
           setDistances={setDistances}
           setHasVisibleBorders={setHasVisibleBorders}
           setSteps={setSteps}
+          setSpeeds={setSpeeds}
           steps={steps}
+          speeds={speeds}
         /> 
         <Uploader API_URL={API_URL} resetState={resetState} setImageFilename={setImageFilename} setIsLoading={setIsLoading} />
         <a href={imageUrl(false)} target="_blank" className="downloader">Export high quality</a>
