@@ -41,7 +41,7 @@ function App() {
   }
 
   const imageUrl = (isPreview = true) => savedShapes.length > 0 
-    ? `${API_URL}/composition/${isPreview ? 'preview_' : ''}${imageFilename}?boxes=${JSON.stringify(savedShapes)}&width=${canvasRef.current.width}&showBorders=${hasVisibleBorders}&speeds=${JSON.stringify(speeds)}&steps=${steps}&distances=${JSON.stringify(distances)}`
+    ? `${API_URL}/composition/${isPreview ? 'preview_' : ''}${imageFilename}?boxes=${JSON.stringify(savedShapes)}&width=${canvasRef.current.width}&showBorders=${hasVisibleBorders}&speeds=${JSON.stringify(speeds)}&steps=${steps}&distances=${JSON.stringify(distances)}&final=${isPreview ? 'false' : 'true'}`
     : `${API_URL}/static/uploads/preview_${imageFilename}`;
 
   return (

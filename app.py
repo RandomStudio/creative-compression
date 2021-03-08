@@ -1,12 +1,13 @@
 from io import BytesIO
-from flask import Flask, jsonify, send_file, request
+from flask import Flask, jsonify, send_file, request, send_from_directory
 from PIL import Image
 import numpy as np
 import json
-from image import compose_focus_effect
+from image import compose_focus_effect, save_animation, save_versions
 import hashlib
 import os
 from urllib.parse import urlsplit, parse_qs
+import shutil
 
 app = Flask(__name__)
 # detect_fn = load_model()
@@ -27,15 +28,18 @@ def after_request(response):
 
 @app.errorhandler(Exception)
 def handle_error(e):
-    response = e.get_response()
-    # replace the body with JSON
-    response.data = json.dumps({
-        "code": e.code,
-        "name": e.name,
-        "description": e.description,
-    })
-    response.content_type = "application/json"
-    return response
+	if hasattr(e, 'get_response') == False:
+		print(e)
+		return
+	response = e.get_response()
+	# replace the body with JSON
+	response.data = json.dumps({
+		"code": e.code,
+		"name": e.name,
+		"description": e.description,
+	})
+	response.content_type = "application/json"
+	return response
 
 @app.route("/")
 def index():
@@ -78,6 +82,7 @@ def get_composition(filename):
 	query = urlsplit(request.url).query
 	params = {k: v[0] for k, v in parse_qs(query).items()}
 	settings = {
+		"final": False,
 		"speeds": [1],
 		"steps": 5,
 		"distances": [5],
@@ -90,12 +95,21 @@ def get_composition(filename):
 	settings["speeds"] = json.loads(settings["speeds"])
 	settings["distances"] = json.loads(settings["distances"])
 	source, background, composition, frames = compose_focus_effect(image, settings)
+	if settings["final"] == 'true':
+		destination = 'output/' + filename
+		save_animation(source, background, frames, destination)
+		save_versions(source, composition, destination)
+		return send_zip(destination)
 	# composition.save(STATIC_FOLDER + id + '.jpg', 'JPEG', optimize=True, quality=80, progressive=True)
 	img_io = BytesIO()
 	composition.save(img_io, 'PNG')
 	img_io.seek(0)
 
 	return send_file(img_io, mimetype='image/png')
+
+def send_zip(destination):
+	shutil.make_archive(destination, 'zip', destination)
+	return send_file(destination + '.zip', as_attachment=True)
 
 if __name__ == '__main__':
     # Threaded option to enable multiple instances for multiple user access support

@@ -113,12 +113,11 @@ def create_mask_overlays(mask_nps, source):
 
 def compose_image(source, background, box_overlays):
 	frames = []
-	source = source.copy()
 	composition = background.copy()
 
 	for (image, left, top) in box_overlays:
 		composition.paste(image, (left, top))
-		#frames.append(composition.copy())
+		frames.append(composition.copy())
 
 	#for i, mask in enumerate(mask_overlays):
 	#	composition = Image.composite(source, composition, mask)
@@ -127,8 +126,10 @@ def compose_image(source, background, box_overlays):
 	return [composition, frames]
 
 def save_versions(source, composition, destination):
-	composition.save(destination + '/image.jpg', 'JPEG', optimize=True, quality=80, progressive=True)
-	source.save(destination + '/normal.jpg', 'JPEG', optimize=True, quality=80, progressive=True)
+	rgb_composition = composition.convert('RGB')
+	rgb_composition.save(destination + '/image.jpg', 'JPEG', optimize=True, quality=80, progressive=True)
+	rgb_source = source.convert('RGB')
+	rgb_source.save(destination + '/normal.jpg', 'JPEG', optimize=True, quality=80, progressive=True)
 
 def save_animation(source, background, frames, destination):
 	if not os.path.exists(destination):
@@ -141,7 +142,10 @@ def save_animation(source, background, frames, destination):
 		newHeight = int((1920 / width) * height)
 		return frame.resize((1920, newHeight))
 	animation = [resizeFrame(frame) for frame in animation]
-	[frame.save(destination + '/frames/frame' +  str(index) + '.jpg', 'JPEG', optimize=True, quality=90, progressive=True) for index, frame in enumerate(animation)]
+	for index, frame in enumerate(animation):
+		frame_rgb = frame.convert('RGB')
+		frame_rgb.save(destination + '/frames/frame' +  str(index) + '.jpg', 'JPEG', optimize=True, quality=90, progressive=True)
+
 	animation[0].save(destination + '/animation.webp',
                save_all=True,
                append_images=animation[1:],
