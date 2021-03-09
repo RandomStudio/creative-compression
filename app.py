@@ -52,9 +52,13 @@ def post_file():
 	image = Image.open(BytesIO(request.data))
 	id = hashlib.md5(image.tobytes()).hexdigest()
 
-	filename = id + '.png'
+	filename = id + '.jpg'
 
-	image.save(STATIC_FOLDER + filename, 'PNG')
+	width, height = image.size
+	newHeight = int((1920 / width) * height)
+	image.resize((1920, newHeight))
+
+	image.save(STATIC_FOLDER + filename, 'JPEG', optimize=True, quality=80, progressive=True)
 
 	width, height = image.size
 
