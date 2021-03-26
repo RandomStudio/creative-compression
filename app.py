@@ -76,7 +76,7 @@ def post_file():
 @app.route("/composition/<filename>", methods=["GET"])
 def get_composition(filename):
 	#(boxes, masks) = generate_boxes_and_masks(detect_fn, image_np, cache_location=CACHE_FOLDER + id, max_highlights=5)
-#
+# test
 	#if len(masks) < 1:
 	#	return jsonify({
 	#		"detections": 0,
