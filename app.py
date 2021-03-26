@@ -100,10 +100,15 @@ def get_composition(filename):
 	settings["distances"] = json.loads(settings["distances"])
 	source, background, composition, frames = compose_focus_effect(image, settings)
 	if settings["final"] == 'true':
-		destination = 'output/' + filename
-		save_animation(source, background, frames, destination)
-		save_versions(source, composition, destination)
-		return send_zip(destination)
+		img_io = BytesIO()
+		composition.save(img_io, 'PNG')
+		img_io.seek(0)
+
+		return send_file(img_io, mimetype='image/png')
+		# destination = 'output/' + filename
+		# save_animation(source, background, frames, destination)
+		# save_versions(source, composition, destination)
+		# return send_zip(destination)
 	# composition.save(STATIC_FOLDER + id + '.jpg', 'JPEG', optimize=True, quality=80, progressive=True)
 	img_io = BytesIO()
 	composition.save(img_io, 'PNG')
